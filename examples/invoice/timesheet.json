@@ -1,0 +1,12 @@
+{
+  "project": { "id": "MUSTER", "description": "muster-ag.ch" },
+  "period": { "start": "2026-11-01", "end": "2026-11-30" },
+  "entries": [
+    { "date": "2026-11-04", "resource": "KM", "notes": "Plugin-Updates und Backup geprüft", "hours": 1.5 },
+    { "date": "2026-11-10", "resource": "KM", "notes": "Kontaktformular: Spam-Schutz eingebaut", "hours": 2 },
+    { "date": "2026-11-17", "resource": "KM", "notes": "Neue Teamseite", "hours": 1.5 },
+    { "date": "2026-11-24", "resource": "KM", "notes": "Bildoptimierung Startseite", "hours": 1 },
+    { "date": "2026-11-28", "resource": "KM", "notes": "Telefonat und Abstimmung", "hours": 0.5 }
+  ],
+  "total": 6.5
+}

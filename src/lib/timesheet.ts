@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { LetterError } from './errors.ts'
+import { formatDate, formatMonth, t, type Lang } from './i18n.ts'
 import { describeIssues } from './zod-errors.ts'
 
 const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'expected a date like 2026-11-30')
@@ -22,4 +23,13 @@ export function parseTimesheet(json: unknown): Timesheet {
 		throw new LetterError(`timesheet JSON: total ${result.data.total} differs from the sum of the entries (${sum})`)
 	}
 	return result.data
+}
+
+/** "Stundenrapport November 2026 · project", or a date range when the period spans months. */
+export function timesheetTitle(lang: Lang, timesheet: Timesheet): string {
+	const { start, end } = timesheet.period
+	const period = start.slice(0, 7) === end.slice(0, 7)
+		? formatMonth(lang, start)
+		: `${formatDate(lang, start)} – ${formatDate(lang, end)}`
+	return t(lang, 'timesheet.title', { period, project: timesheet.project.description })
 }

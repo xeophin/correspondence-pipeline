@@ -1,0 +1,92 @@
+---
+import { formatAmount, formatDate, t, type Lang } from '../lib/i18n.ts'
+import { timesheetTitle, type Timesheet } from '../lib/timesheet.ts'
+
+interface Props {
+	timesheet: Timesheet
+	lang: Lang
+}
+
+const { timesheet, lang } = Astro.props
+---
+
+<section class="attachment">
+	<h2>{timesheetTitle(lang, timesheet)}</h2>
+	<table class="hours">
+		<thead>
+			<tr>
+				<th class="date">{t(lang, 'timesheet.date')}</th>
+				<th>{t(lang, 'timesheet.description')}</th>
+				<th class="number">{t(lang, 'timesheet.hours')}</th>
+			</tr>
+		</thead>
+		<tbody>
+			{timesheet.entries.map(entry => (
+				<tr>
+					<td class="date">{formatDate(lang, entry.date)}</td>
+					<td>{entry.notes}</td>
+					<td class="number">{formatAmount(lang, entry.hours)}</td>
+				</tr>
+			))}
+		</tbody>
+		<tfoot>
+			<tr>
+				<th colspan="2">{t(lang, 'timesheet.total')}</th>
+				<td class="number">{formatAmount(lang, timesheet.total)}</td>
+			</tr>
+		</tfoot>
+	</table>
+</section>
+
+<style>
+	.attachment {
+		break-before: page;
+		display: flex;
+		flex-direction: column;
+		gap: 1rlh;
+	}
+
+	h2 {
+		font-weight: 500;
+	}
+
+	.hours {
+		width: 100%;
+		border-collapse: collapse;
+
+		th, td {
+			padding: 0.4em 0;
+			vertical-align: top;
+			text-align: left;
+			font-weight: 400;
+		}
+
+		.date {
+			white-space: nowrap;
+			padding-right: 2em;
+		}
+
+		.number {
+			text-align: right;
+			padding-left: 2em;
+			white-space: nowrap;
+		}
+
+		thead th {
+			border-bottom: 1px solid black;
+			color: darkmagenta;
+		}
+
+		tbody tr {
+			break-inside: avoid;
+			border-bottom: 0.5px solid #999;
+		}
+
+		tfoot {
+			th, td {
+				font-weight: 500;
+				border-top: 1px solid black;
+			}
+		}
+	}
+</style>

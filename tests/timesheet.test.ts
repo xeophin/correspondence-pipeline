@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { parseTimesheet } from '../src/lib/timesheet.ts'
+import { parseTimesheet, timesheetTitle } from '../src/lib/timesheet.ts'
 
 const valid = {
 	project: { id: 'MUSTER', description: 'muster-ag.ch' },
@@ -22,4 +22,10 @@ test('rejects a total that differs from the sum of the entries', () => {
 test('rejects unknown keys and malformed dates', () => {
 	expect(() => parseTimesheet({ ...valid, extra: 1 })).toThrow(/extra/)
 	expect(() => parseTimesheet({ ...valid, period: { start: '1.11.2026', end: '2026-11-30' } })).toThrow(/period\.start/)
+})
+
+test('the attachment title names the month, or the date range across months', () => {
+	expect(timesheetTitle('de', valid)).toBe('Stundenrapport November 2026 · muster-ag.ch')
+	expect(timesheetTitle('en', { ...valid, period: { start: '2026-10-15', end: '2026-11-30' } }))
+		.toBe('Timesheet 15 October 2026 – 30 November 2026 · muster-ag.ch')
 })

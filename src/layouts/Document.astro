@@ -6,6 +6,7 @@ import MainAndSide from '../components/MainAndSide.astro'
 import FullWidth from '../components/FullWidth.astro'
 import ItemsTable from '../components/ItemsTable.astro'
 import QrBill from '../components/QrBill.astro'
+import TimesheetAttachment from '../components/TimesheetAttachment.astro'
 import PageRules from '../components/PageRules.astro'
 import type { LoadedLetter } from '../lib/letter-loader.ts'
 import { formatDate, t } from '../lib/i18n.ts'
@@ -67,6 +68,8 @@ const firstPageHeadHeight = 97 - PAGE_MARGIN.top
 	)}
 
 	{doc.invoice && <QrBill invoice={doc.invoice} lang={doc.lang}/>}
+
+	{doc.timesheet && <TimesheetAttachment timesheet={doc.timesheet} lang={doc.lang}/>}
 </body>
 </html>
 

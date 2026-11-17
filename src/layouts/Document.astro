@@ -15,7 +15,18 @@ import { SENDER } from '../lib/sender.ts'
 
 type Props = LoadedLetter
 
-const { doc, htmlBefore, htmlAfter } = Astro.props
+const { doc, signature } = Astro.props
+let { htmlBefore, htmlAfter } = Astro.props
+
+// The signature goes above the body's last paragraph (the name).
+if (signature) {
+	const insert = (html: string) => {
+		const at = html.lastIndexOf('<p>')
+		return at === -1 ? html : `${html.slice(0, at)}<img class="signature" src="${signature}" alt="">${html.slice(at)}`
+	}
+	if (htmlAfter.trim()) htmlAfter = insert(htmlAfter)
+	else htmlBefore = insert(htmlBefore)
+}
 const brand = doc.sender === 'business' ? 'example.org/studio' : 'hanna/beispiel'
 const typeLabel = doc.type === 'invoice' ? t(doc.lang, 'type.invoice') : undefined
 const documentLabel = doc.invoice ? `${typeLabel} ${doc.invoice.number}` : doc.title
@@ -104,6 +115,12 @@ const firstPageHeadHeight = 97 - PAGE_MARGIN.top
 
 		:global(p) {
 			margin: 0;
+		}
+
+		:global(.signature) {
+			display: block;
+			width: 40mm;
+			margin-block: -0.5rlh;
 		}
 	}
 </style>

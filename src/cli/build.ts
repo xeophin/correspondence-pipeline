@@ -1,17 +1,25 @@
-import { mkdtemp, rm } from 'node:fs/promises'
-import { tmpdir } from 'node:os'
+import { mkdir, mkdtemp, rm } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { build } from 'astro'
 
 export const REPO_ROOT = fileURLToPath(new URL('../../', import.meta.url))
 
-/** Builds the one-page site for `mdPath` into a temp dir. */
+/**
+ * Builds the one-page site for `mdPath` into its own temp dir under the repo's
+ * git-ignored `.astro/builds/`. Astro's prerender step must run inside the
+ * working directory to resolve node_modules, so the build runs with the repo as cwd.
+ */
 export async function buildDocument(mdPath: string): Promise<{ dir: string; cleanup(): Promise<void> }> {
-	const tmp = await mkdtemp(join(tmpdir(), 'letter-build-'))
+	const sourcePath = resolve(mdPath)
+	const builds = join(REPO_ROOT, '.astro', 'builds')
+	await mkdir(builds, { recursive: true })
+	const tmp = await mkdtemp(join(builds, 'letter-'))
 	const cleanup = () => rm(tmp, { recursive: true, force: true })
-	process.env.LETTER_FILE = resolve(mdPath)
+	const cwd = process.cwd()
+	process.env.LETTER_FILE = sourcePath
 	try {
+		process.chdir(REPO_ROOT)
 		await build({
 			root: REPO_ROOT,
 			outDir: join(tmp, 'dist'),
@@ -21,6 +29,8 @@ export async function buildDocument(mdPath: string): Promise<{ dir: string; clea
 	} catch (error) {
 		await cleanup()
 		throw error
+	} finally {
+		process.chdir(cwd)
 	}
 	return { dir: join(tmp, 'dist'), cleanup }
 }

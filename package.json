@@ -22,5 +22,8 @@
   },
   "devDependencies": {
     "vitest": "^5.1.0"
+  },
+  "bin": {
+    "letter": "src/cli/letter.ts"
   }
 }

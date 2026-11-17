@@ -42,3 +42,7 @@ export function formatMonth(lang: Lang, iso: string): string {
 export function formatAmount(lang: Lang, n: number): string {
 	return new Intl.NumberFormat(LOCALE[lang], { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)
 }
+
+export function formatQuantity(lang: Lang, n: number): string {
+	return new Intl.NumberFormat(LOCALE[lang], { maximumFractionDigits: 4 }).format(n)
+}

@@ -1,0 +1,81 @@
+---
+import type { InvoiceView } from '../lib/banana.ts'
+import { formatAmount, formatQuantity, t, type Lang } from '../lib/i18n.ts'
+
+interface Props {
+	invoice: InvoiceView
+	lang: Lang
+}
+
+const { invoice, lang } = Astro.props
+const quantity = (item: InvoiceView['items'][number]) =>
+	item.quantity === null ? '' : [formatQuantity(lang, item.quantity), item.unit].filter(Boolean).join(' ')
+---
+
+<table class="items">
+	<thead>
+		<tr>
+			<th class="description">{t(lang, 'items.description')}</th>
+			<th class="number">{t(lang, 'items.quantity')}</th>
+			<th class="number">{t(lang, 'items.unitPrice')}</th>
+			<th class="number">{t(lang, 'items.amount')}</th>
+		</tr>
+	</thead>
+	<tbody>
+		{invoice.items.map(item => (
+			<tr>
+				<td class="description">{item.description}</td>
+				<td class="number">{quantity(item)}</td>
+				<td class="number">{item.unitPrice === null ? '' : formatAmount(lang, item.unitPrice)}</td>
+				<td class="number">{formatAmount(lang, item.amount)}</td>
+			</tr>
+		))}
+	</tbody>
+	<tfoot>
+		<tr>
+			<th class="description" colspan="3">{t(lang, 'totals.total')} {invoice.currency}</th>
+			<td class="number">{formatAmount(lang, invoice.total)}</td>
+		</tr>
+	</tfoot>
+</table>
+
+<style>
+	.items {
+		width: 100%;
+		border-collapse: collapse;
+
+		th, td {
+			padding: 0.4em 0;
+			vertical-align: top;
+			text-align: left;
+			font-weight: 400;
+		}
+
+		.description {
+			white-space: pre-line;
+		}
+
+		.number {
+			text-align: right;
+			padding-left: 2em;
+			white-space: nowrap;
+		}
+
+		thead th {
+			border-bottom: 1px solid black;
+			color: darkmagenta;
+		}
+
+		tbody tr {
+			break-inside: avoid;
+			border-bottom: 0.5px solid #999;
+		}
+
+		tfoot {
+			th, td {
+				font-weight: 500;
+				border-top: 1px solid black;
+			}
+		}
+	}
+</style>

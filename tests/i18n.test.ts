@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { formatAmount, formatDate, formatMonth, t } from '../src/lib/i18n.ts'
+import { formatAmount, formatDate, formatMonth, formatQuantity, t } from '../src/lib/i18n.ts'
 
 test('formats long dates per language', () => {
 	expect(formatDate('de', '2026-12-11')).toBe('11. Dezember 2026')
@@ -19,4 +19,10 @@ test('formats amounts with Swiss grouping and two decimals', () => {
 test('substitutes label variables', () => {
 		expect(t('en', 'type.invoice')).toBe('Invoice')
 	expect(t('de', 'timesheet.title', { period: 'November 2026', project: 'kibo' })).toBe('Stundenrapport November 2026 · kibo')
+})
+
+test('formats quantities without trailing zeros', () => {
+	expect(formatQuantity('de', 6.5)).toBe('6.5')
+	expect(formatQuantity('de', 1)).toBe('1')
+	expect(formatQuantity('de', 1500)).toBe("1'500")
 })

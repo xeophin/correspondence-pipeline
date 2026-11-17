@@ -3,6 +3,8 @@ import Header from '../components/Header.astro'
 import Address from '../components/Address.astro'
 import Subject from '../components/Subject.astro'
 import MainAndSide from '../components/MainAndSide.astro'
+import FullWidth from '../components/FullWidth.astro'
+import ItemsTable from '../components/ItemsTable.astro'
 import PageRules from '../components/PageRules.astro'
 import type { LoadedLetter } from '../lib/letter-loader.ts'
 import { formatDate, t } from '../lib/i18n.ts'
@@ -14,8 +16,9 @@ type Props = LoadedLetter
 const { doc, htmlBefore, htmlAfter } = Astro.props
 const brand = doc.sender === 'business' ? 'example.org/studio' : 'hanna/beispiel'
 const typeLabel = doc.type === 'invoice' ? t(doc.lang, 'type.invoice') : undefined
-const typeLine = doc.sender === 'business' ? (typeLabel ?? doc.title) : undefined
-const runningHeader = doc.invoice ? `${brand} · ${typeLabel} ${doc.invoice.number}` : brand
+const documentLabel = doc.invoice ? `${typeLabel} ${doc.invoice.number}` : doc.title
+const typeLine = doc.sender === 'business' ? documentLabel : undefined
+const runningHeader = doc.invoice ? `${brand} · ${documentLabel}` : brand
 const footerLines = [
 	`${SENDER.name} · ${SENDER.street} · ${SENDER.zip} ${SENDER.city}`,
 	`${SENDER.email} · ${SENDER.phone}`,
@@ -28,6 +31,7 @@ const addressLeft = 117 - PAGE_MARGIN.left
 const firstPageHeadHeight = 97 - PAGE_MARGIN.top
 ---
 
+<!doctype html>
 <html lang={doc.lang === 'de' ? 'de-CH' : 'en-CH'}>
 <head>
 	<meta charset="utf-8"/>
@@ -47,8 +51,19 @@ const firstPageHeadHeight = 97 - PAGE_MARGIN.top
 
 	<MainAndSide>
 		<div class="body" set:html={htmlBefore}/>
-		{htmlAfter && <div class="body" set:html={htmlAfter}/>}
 	</MainAndSide>
+
+	{doc.invoice && (
+		<FullWidth>
+			<ItemsTable invoice={doc.invoice} lang={doc.lang}/>
+		</FullWidth>
+	)}
+
+	{htmlAfter.trim() && (
+		<MainAndSide>
+			<div class="body" set:html={htmlAfter}/>
+		</MainAndSide>
+	)}
 </body>
 </html>
 

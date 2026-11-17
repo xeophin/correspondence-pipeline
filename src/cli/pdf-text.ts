@@ -6,6 +6,8 @@ export interface TextItem {
 	topMm: number
 	rightMm: number
 	bottomMm: number
+	/** PDF-internal font name; equal names mean the same font. */
+	font: string
 }
 
 const PT_TO_MM = 25.4 / 72
@@ -29,6 +31,7 @@ export async function pdfPages(pdf: Uint8Array): Promise<TextItem[][]> {
 				topMm: top * PT_TO_MM,
 				rightMm: (x + item.width) * PT_TO_MM,
 				bottomMm: (pageHeight - baseline) * PT_TO_MM,
+				font: item.fontName,
 			})
 		}
 		pages.push(items)

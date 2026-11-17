@@ -70,3 +70,15 @@ test('overwrites an existing PDF', () => {
 	expect(readFileSync(pdf).subarray(0, 4).toString()).toBe('%PDF')
 	expect(statSync(pdf).mtime.getFullYear()).toBeGreaterThan(2000)
 })
+
+test('an invalid IBAN in the Banana JSON stops before building', () => {
+	const dir = mkdtempSync(join(tmpdir(), 'letter-cli-'))
+	const json = JSON.parse(readFileSync('examples/invoice/invoice.json', 'utf8'))
+	json.supplier_info.iban_number = 'CH00'
+	writeFileSync(join(dir, 'invoice.json'), JSON.stringify(json))
+	writeFileSync(join(dir, 'r.md'), readFileSync('examples/invoice/invoice.md', 'utf8'))
+	const result = run(join(dir, 'r.md'))
+	expect(result.status).toBe(1)
+	expect(result.stderr).toMatch(/^letter: .*QR-bill/)
+	expect(existsSync(join(dir, 'r.pdf'))).toBe(false)
+})

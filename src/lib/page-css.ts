@@ -35,5 +35,12 @@ export function pageCss({ runningHeader, fileName, footerLines, lang }: PageCssO
 	margin-top: ${m.top}mm;
 	@top-left { content: none; }
 }
+@page qrbill {
+	margin: 0;
+	@top-left { content: none; }
+	@bottom-left { content: none; }
+	@bottom-center { content: none; }
+	@bottom-right { content: none; }
+}
 `
 }

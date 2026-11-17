@@ -3,6 +3,7 @@ import { writeFile } from 'node:fs/promises'
 import { dirname, join, parse } from 'node:path'
 import { loadDocument } from '../lib/document.ts'
 import { LetterError } from '../lib/errors.ts'
+import { qrBillSvg } from '../lib/qr.ts'
 import { buildDocument } from './build.ts'
 import { pdfPages } from './pdf-text.ts'
 import { checkFont, printPdf, withPage } from './print.ts'
@@ -14,6 +15,8 @@ const FONT = 'Unica 77 LL'
 async function main(args: string[]): Promise<void> {
 	if (args.length !== 1) throw new LetterError('usage: letter <file.md>')
 	const doc = loadDocument(args[0])
+	// Validate the QR-bill data here: errors inside the Astro build lose their LetterError type.
+	if (doc.invoice) qrBillSvg(doc.invoice, doc.lang)
 	const build = await buildDocument(doc.sourcePath)
 	try {
 		const server = await serveDir(build.dir)

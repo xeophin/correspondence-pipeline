@@ -1,0 +1,46 @@
+---
+import type { InvoiceView } from '../lib/banana.ts'
+import type { Lang } from '../lib/i18n.ts'
+import { qrBillSvg } from '../lib/qr.ts'
+
+interface Props {
+	invoice: InvoiceView
+	lang: Lang
+}
+
+const { invoice, lang } = Astro.props
+const svg = qrBillSvg(invoice, lang)
+---
+
+<section class="qr-page">
+	<div class="qr-bill" set:html={svg}/>
+</section>
+
+<style>
+	/* A page of its own (named page `qrbill`: no margins, no footer) with the
+	   210 × 105 mm payment part flush with the bottom edge. */
+	.qr-page {
+		page: qrbill;
+		break-before: page;
+		height: 296mm;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-end;
+	}
+
+	/* The SVG only draws the vertical cut line; the horizontal one along the top
+	   is required on unperforated paper. */
+	.qr-bill {
+		width: 210mm;
+		height: 105mm;
+		margin-bottom: -1mm;
+		border-top: 0.75pt dashed black;
+		box-sizing: border-box;
+
+		:global(svg) {
+			display: block;
+			width: 210mm;
+			height: 105mm;
+		}
+	}
+</style>

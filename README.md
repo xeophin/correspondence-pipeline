@@ -1,43 +1,55 @@
-# Astro Starter Kit: Minimal
+# Correspondence layouts
+
+Turns a Markdown letter or invoice into an A4 PDF for a C5 right-window envelope. Invoices take their line items, total and QR-bill data from Banana Accounting Plus. See `specs.md` for the full spec.
+
+## Setup
 
 ```sh
-pnpm create astro@latest -- --template minimal
+pnpm install
+pnpm exec playwright install chromium
+pnpm setup                # once: puts pnpm's global bin dir on PATH
+pnpm add -g link:$PWD     # makes `letter` available everywhere
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+The font Unica 77 LL must be installed.
 
-## 🚀 Project Structure
+## Usage
 
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+```sh
+letter ~/Correspondence/2026/muster/2026-12-11-rechnung.md
+# → ~/Correspondence/2026/muster/2026-12-11-rechnung.pdf
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+### Frontmatter
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+```yaml
+type: invoice            # letter | invoice (required)
+sender: business         # business (default) | personal
+lang: de                 # de (default) | en
+date: 2026-12-11         # letters: required; invoices: Banana's date
+subject: Unterhalt muster-ag.ch            # required
+recipient: |             # letters: required; invoices: Banana's customer address
+  Muster AG
+  Musterstrasse 12
+  3000 Bern
+invoice: ./2026-042.json        # invoices: Banana invoice JSON, relative to this file
+timesheet: ./MUSTER-2026-11.json # optional attachment
+signature: false         # true: signature image from the user config
+title: Bewerbung         # optional second header line for business letters
+```
 
-Any static assets, like images, can be placed in the `public/` directory.
+In an invoice, a line `::items` places the items table; without it the table follows the text.
 
-## 🧞 Commands
+### User config
 
-All commands are run from the root of the project, from a terminal:
+`~/.config/letter/config.json` (or `$LETTER_CONFIG`):
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `pnpm install`             | Installs dependencies                            |
-| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
+```json
+{ "signature": "signature.png" }
+```
 
-## 👀 Want to learn more?
+The path is relative to the config file.
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+### Banana
+
+Install `banana/ch.xeophin.letter.export-invoice.js` (in the accounting file) and `banana/ch.xeophin.letter.export-timesheet.js` (in the timesheet file) via Extensions → Manage Extensions → Add from file. Each asks what to export and where to save the JSON.

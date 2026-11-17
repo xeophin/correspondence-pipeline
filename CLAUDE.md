@@ -12,7 +12,7 @@ This repo holds the parts of a correspondence pipeline:
 2. The Markdown files act as the data source and are combined with an HTML template.
 3. The resulting HTML page is turned into a PDF.
 
-Astro is used to author the HTML templates (layouts). The repo currently is the untouched Astro "minimal" starter (`src/pages/index.astro` only).
+Astro is used to author the HTML templates (layouts). Full spec: `specs.md`; implementation plan: `docs/superpowers/plans/2026-11-17-letter-cli.md`.
 
 ## Commands
 
@@ -23,8 +23,22 @@ Package manager is pnpm (Node >= 22.23.4). Astro 7.
 - `pnpm build` — static build to `dist/`
 - `pnpm preview` — serve the build
 - `pnpm astro check` — type check (only works once `@astrojs/check` and `typescript` are installed; not currently a dependency)
+- `pnpm test` — Vitest. Most tests build a real PDF and check text positions in mm (`src/cli/pdf-text.ts`); they need Unica 77 LL installed.
+- `pnpm exec playwright install chromium` — once, after install
+- `node src/cli/letter.ts <file.md>` — the CLI. Global install: `pnpm setup` (adds pnpm's bin dir to PATH), then `pnpm add -g link:$PWD`, then `letter <file.md>`
+- Dev preview of one document: `LETTER_FILE=examples/bewerbung.md astro dev --background` (default: `examples/letter.md`)
 
-There is no test or lint setup yet.
+pnpm and fnm's Node are not readable inside Claude Code's sandbox; pnpm commands run outside it.
+
+## Structure
+
+- `src/lib/` — plain TS run by Node directly (erasable syntax only, `.ts` import extensions): document model and validation, Banana mapping, i18n, page CSS, QR-bill, signature, user config (`~/.config/letter/config.json` or `$LETTER_CONFIG`)
+- `src/cli/` — the `letter` command: build (Astro into `.astro/builds/`, cwd = repo, because Astro's prerender step must sit inside cwd), serve, print, verify layout against the envelope window
+- `src/layouts/Document.astro`, `src/components/` — the templates
+- `banana/` — Banana Accounting extensions that export invoice and timesheet JSON
+- `examples/` — fictional documents for tests and preview
+
+User-facing errors are `LetterError`; anything that must fail with a clear message has to be checked before the Astro build (errors thrown inside Astro lose their type).
 
 ## Architecture
 

@@ -123,8 +123,9 @@ The existing grid (aside column + main column, `--column-width`, `--gutter-width
 
 ## Invoice details
 
-- Line items and the total come from the Banana invoice JSON (Banana's "Invoice Json Object", version 1.0) and are printed as-is.
-- **QR-bill**: generated from the invoice JSON (creditor/IBAN, amount, currency, reference, debtor) as SVG, using a QR-bill library (e.g. `swissqrbill`) *(my call)*. Labels follow `lang`. It always gets **its own page** after the letter and before the attachment: no page margins, no footer or running header, with the 210 × 105 mm bill flush with the bottom edge. (Decided 2026-11-17: on a shared page the footer's bottom margin would lift the bill off the edge, and CSS paged media can't give a single page a different margin without a page break.)
+- Line items and the total come from the Banana invoice JSON (Banana's "Invoice Json Object", version 1.0) and are printed as-is. Only `item_type: item` rows are supported; others are an error.
+- The header's second line and the running header read `Rechnung 2026-042` (type and Banana invoice number).
+- **QR-bill**: generated from the invoice JSON (creditor/IBAN, amount, currency, reference, debtor) as SVG, using `swissqrbill`. The creditor IBAN comes from Banana (`supplier_info.iban_number`), the creditor address from `src/lib/sender.ts`. Labels follow `lang`. It always gets **its own page** after the letter and before the attachment: no page margins, no footer or running header, with the 210 × 105 mm bill flush with the bottom edge. (Decided 2026-11-17: on a shared page the footer's bottom margin would lift the bill off the edge, and CSS paged media can't give a single page a different margin without a page break.)
 - **Timesheet attachment** (optional): starts on a new page, after the QR-bill page. Title like "Stundenrapport November 2026 · kibo-physio.ch". One row per entry: date, description, hours; total at the end. No separate billable column (hours and billable hours are the same here).
 
 ## Language
@@ -176,8 +177,8 @@ The CLI exits non-zero with a clear message, and writes no PDF, when:
 - Whether to turn on PDF/A or tagged-PDF output if Chromium/Playwright offers it cheaply.
 - A `--keep-html` style debug option.
 
-## To verify early
+## Verification status
 
-- Chromium `@page` margin boxes with `counter(page)` / `counter(pages)` and a different first page (`@page :first`).
-- Envelope window numbers against a real C5 envelope.
-- Banana Journal column names, and that an extension may write files where wanted.
+- **Verified (2026-11-17):** Chromium `@page` margin boxes with `counter(page)` / `counter(pages)`, a different first page (`@page :first`, including its own top margin) and a named page without margins (`@page qrbill`). See `tests/print.test.ts`.
+- **Open:** envelope window numbers against a real C5 envelope (print `examples/letter.pdf` at 100 %, fold once, check).
+- **Open:** Banana Journal column names in a real timesheet file (`banana/ch.xeophin.letter.export-timesheet.js`, `COLUMNS`), and both extensions writing files.

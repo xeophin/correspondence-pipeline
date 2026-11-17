@@ -44,3 +44,4 @@ Claude's own session memory is not part of the repo, so durable project knowledg
 - 2026-11-17: Merge in Astro (custom content loader, one page per document), not placeholders filled by a separate process: Astro already templates, and dev preview keeps working.
 - 2026-11-17: PDF via headless Chromium (Playwright). The components use `text-box`, `rlh`, subgrid and nesting, which only Chromium renders. Vivliostyle is the fallback; WeasyPrint was rejected (CSS rewrite only to gain PDF/A).
 - 2026-11-17: Banana Accounting Plus is the source for invoice/offer/timesheet data, via our own Banana extension that exports JSON. The template never recomputes amounts.
+- 2026-11-17: No VAT: the business is below the registration threshold. Invoices show line items and the total only (no VAT rows, no subtotal). The QR-bill always gets its own page (a shared page's footer margin would lift it off the bottom edge).

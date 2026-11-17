@@ -16,7 +16,7 @@
 
 - Node runs `src/lib/**` and `src/cli/**` directly: only erasable TS syntax (no `enum`, no parameter properties, no namespaces), and relative imports use the `.ts` extension.
 - All user-facing failures throw `LetterError` (from `src/lib/errors.ts`). The CLI prints `letter: <message>`, exits 1 and writes no PDF.
-- Amounts are never recomputed: totals, VAT and line amounts come from the Banana JSON as given.
+- Amounts are never recomputed: totals and line amounts come from the Banana JSON as given. No VAT and no subtotal (user decision 2026-11-17).
 - `lang: de | en`, default `de`. Intl locales `de-CH` / `en-CH`.
 - Envelope zones (mm from the page's top-left): address always-visible 117–196 × 47–81. Possibly-visible 98–215 × 33–95. Subject starts at ≥ 95. Header right of x = 98 stays above y = 33.
 - Header brand: `business` → `example.org/studio` with the type line; `personal` → `hanna/beispiel` without a type line. Plain letters have no type line unless `title:` is set.
@@ -85,7 +85,7 @@ Proves the spec's "verify early" items for Chromium: margin boxes with `counter(
   - `class LetterError extends Error`
   - `type Lang = 'de' | 'en'`
   - `t(lang: Lang, key: LabelKey, vars?: Record<string, string>): string`, with `{name}` substitution. Keys and values (de / en):
-    `type.invoice` Rechnung / Invoice · `items.description` Beschreibung / Description · `items.quantity` Menge / Qty · `items.unitPrice` Preis / Price · `items.amount` Betrag / Amount · `totals.subtotal` Zwischensumme / Subtotal · `totals.vat` MWST {rate} / VAT {rate} · `totals.total` Total / Total · `page` Seite / Page · `page.of` von / of · `timesheet.title` Stundenrapport {period} · {project} / Timesheet {period} · {project} · `timesheet.date` Datum / Date · `timesheet.description` Tätigkeit / Activity · `timesheet.hours` Stunden / Hours · `timesheet.total` Total / Total
+    `type.invoice` Rechnung / Invoice · `items.description` Beschreibung / Description · `items.quantity` Menge / Qty · `items.unitPrice` Preis / Price · `items.amount` Betrag / Amount · `totals.total` Total / Total · `page` Seite / Page · `page.of` von / of · `timesheet.title` Stundenrapport {period} · {project} / Timesheet {period} · {project} · `timesheet.date` Datum / Date · `timesheet.description` Tätigkeit / Activity · `timesheet.hours` Stunden / Hours · `timesheet.total` Total / Total
   - `formatDate(lang: Lang, iso: string): string`, a long date.
   - `formatMonth(lang: Lang, iso: string): string`, giving `November 2026`.
   - `formatAmount(lang: Lang, n: number): string`: two decimals, Intl grouping, no currency.
@@ -96,8 +96,7 @@ Proves the spec's "verify early" items for Chromium: margin boxes with `counter(
   ```ts
   expect(formatDate('de', '2026-12-11')).toBe('11. Dezember 2026')
   expect(formatDate('en', '2026-12-11')).toBe('11 December 2026')
-  expect(formatAmount('de', 1234.5)).toBe('1’234.50')          // U+2019, Intl de-CH
-  expect(t('de', 'totals.vat', { rate: '8.1%' })).toBe('MWST 8.1%')
+  expect(formatAmount('de', 1234.5)).toBe("1'234.50")          // ASCII apostrophe, Intl de-CH
   expect(cssString('Bewerbung "Müller"\\x.md')).toBe('"Bewerbung \\"Müller\\"\\\\x.md"')
   const css = pageCss({ runningHeader: 'example.org/studio · Rechnung 2026-042', fileName: 'a "b".md', footerLines: ['Hanna Beispiel'], lang: 'en' })
   expect(css).toContain('"Page " counter(page) " of " counter(pages)')
@@ -165,7 +164,7 @@ Proves the spec's "verify early" items for Chromium: margin boxes with `counter(
   interface QrAddress { name: string; address: string; buildingNumber?: string; zip: string; city: string; country: string }
   interface InvoiceItem { description: string; quantity: number | null; unit: string; unitPrice: number | null; amount: number }
   interface InvoiceView { number: string; date: string; currency: string; customerAddress: string[]; debtor: QrAddress;
-    items: InvoiceItem[]; subtotal: number; vat: { rate: string; amount: number }[]; total: number }
+    items: InvoiceItem[]; total: number }
   toInvoiceView(json: unknown): InvoiceView   // throws LetterError naming the missing JSON field
   // sender.ts: the constants already used in index.astro/Address.astro
   const SENDER: { name: 'Hanna Beispiel'; street: 'Beispielweg 1'; zip: '8000'; city: 'Zürich'; country: 'CH';
@@ -262,7 +261,7 @@ Proves the spec's "verify early" items for Chromium: margin boxes with `counter(
 
 **Interfaces:**
 - Consumes: `InvoiceView` (Task 4), `formatAmount`, `t` (Task 2).
-- The table spans the full width (`FullWidth`). Columns: description, quantity + unit, unit price, amount. The rows are subtotal, one VAT row per `vat[]` entry, and total, with the currency on the total row. `break-inside: avoid` on rows.
+- The table spans the full width (`FullWidth`). Columns: description, quantity + unit, unit price, amount. One total row, with the currency on it. No VAT, no subtotal. `break-inside: avoid` on rows.
 
 - [ ] **Step 1: Write failing tests:** page 1 contains `Rechnung`; the intro paragraph's top < the first item's top < the closing paragraph's top; the total text equals `formatAmount('de', view.total)`; the `en` variant shows `Invoice` and `Total`; an invoice without a marker puts the table after the last paragraph.
 - [ ] **Step 2:** Run `pnpm test tests/invoice.test.ts`. Expected: FAIL.

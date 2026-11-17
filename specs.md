@@ -26,7 +26,7 @@ Accounting happens in **Banana Accounting Plus** (Advanced plan). Invoices, offe
 
 ## Anti-goals (failure even if it "works")
 
-- An amount in the PDF differs from Banana. → The template never recomputes totals or VAT; it prints what Banana calculated.
+- An amount in the PDF differs from Banana. → The template never recomputes totals; it prints what Banana calculated.
 - The address is partly hidden by the envelope window, or the subject line shows through it.
 - Regenerating an old PDF requires software I no longer have.
 - A missing font, file or field silently produces a wrong-looking PDF instead of an error.
@@ -123,15 +123,19 @@ The existing grid (aside column + main column, `--column-width`, `--gutter-width
 
 ## Invoice details
 
-- Line items, subtotal, VAT and total come from the Banana invoice JSON (Banana's "Invoice Json Object", version 1.0) and are printed as-is.
+- Line items and the total come from the Banana invoice JSON (Banana's "Invoice Json Object", version 1.0) and are printed as-is.
 - **QR-bill**: generated from the invoice JSON (creditor/IBAN, amount, currency, reference, debtor) as SVG, using a QR-bill library (e.g. `swissqrbill`) *(my call)*. Labels follow `lang`. It always gets **its own page** after the letter and before the attachment: no page margins, no footer or running header, with the 210 × 105 mm bill flush with the bottom edge. (Decided 2026-11-17: on a shared page the footer's bottom margin would lift the bill off the edge, and CSS paged media can't give a single page a different margin without a page break.)
 - **Timesheet attachment** (optional): starts on a new page, after the QR-bill page. Title like "Stundenrapport November 2026 · kibo-physio.ch". One row per entry: date, description, hours; total at the end. No separate billable column (hours and billable hours are the same here).
 
 ## Language
 
 - `lang: de | en`, default `de`.
-- One translation table holds every fixed label: document types, table headings, subtotal/VAT/total, "Seite x von y" / "Page x of y", attachment title, QR-bill headings.
+- One translation table holds every fixed label: document types, table headings, total, "Seite x von y" / "Page x of y", attachment title, QR-bill headings.
 - Dates and numbers formatted via `Intl` for `de-CH` / `en-CH` (e.g. `11. Dezember 2026`, `CHF 1'234.50`).
+
+## VAT
+
+No VAT (decided 2026-11-17): the business is below the registration threshold. Invoices show no VAT and no subtotal, only line items and the total.
 
 ## Banana extension
 

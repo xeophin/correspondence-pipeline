@@ -279,7 +279,7 @@ QR-bill on its own page: confirmed by the user on 2026-11-17 (see specs.md, Invo
 - Test: `tests/qr.test.ts`
 
 **Interfaces:**
-- Consumes: `InvoiceView.debtor/total/currency/number`, `loadUserConfig().iban`, `SENDER`.
+- Consumes: `InvoiceView.debtor/total/currency/number/creditorIban` (missing IBAN → `LetterError`), `SENDER`.
 - Produces: `qrBillSvg(view: InvoiceView, iban: string, lang: Lang): string`, using `swissqrbill/svg` with `language: 'DE' | 'EN'`, no reference (a plain IBAN), and message `<type label> <number>`. Invalid data → `LetterError` carrying swissqrbill's message.
 - Layout: a page of its own (`page: qrbill`), with the 210 × 105 mm bill flush with the bottom edge. It comes after the letter and before any attachment.
 

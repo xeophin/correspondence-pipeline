@@ -1,0 +1,86 @@
+{
+  "billing_info": {
+    "due_date": "2026-12-11",
+    "total_amount_vat_exclusive": "1020.00",
+    "total_amount_vat_inclusive": "1020.00",
+    "total_to_pay": "1020.00",
+    "total_vat_amount": "0.00"
+  },
+  "creator_info": { "name": "ch.banana.application.invoice.default", "pubdate": "2021-09-24", "publisher": "Banana.ch SA", "version": "" },
+  "customer_info": {
+    "address1": "Musterstrasse 12",
+    "address2": "",
+    "address3": "",
+    "business_name": "Muster AG",
+    "city": "Bern",
+    "country": "",
+    "country_code": "CH",
+    "courtesy": "",
+    "email": "",
+    "first_name": "Erika",
+    "last_name": "Muster",
+    "number": "1001",
+    "postal_code": "3000"
+  },
+  "document_info": {
+    "currency": "CHF",
+    "date": "2026-12-11",
+    "decimals_amounts": 2,
+    "doc_type": "10",
+    "locale": "de",
+    "number": "2026-042",
+    "text_begin": "",
+    "title": "Unterhalt muster-ag.ch",
+    "vat_mode": "vat_none"
+  },
+  "items": [
+    {
+      "description": "Unterhalt Website November 2026",
+      "item_type": "item",
+      "mesure_unit": "h",
+      "number": "",
+      "quantity": "6.50",
+      "total_amount_vat_exclusive": "780.00",
+      "total_amount_vat_inclusive": "780.00",
+      "total_vat_amount": "0.00",
+      "unit_price": {
+        "amount_vat_exclusive": null,
+        "amount_vat_inclusive": "120.00",
+        "calculated_amount_vat_exclusive": "120.00",
+        "calculated_amount_vat_inclusive": "120.00",
+        "calculated_vat_amount": "0.00"
+      }
+    },
+    {
+      "description": "Hosting 2027",
+      "item_type": "item",
+      "mesure_unit": "",
+      "number": "",
+      "quantity": "1.00",
+      "total_amount_vat_exclusive": "240.00",
+      "total_amount_vat_inclusive": "240.00",
+      "total_vat_amount": "0.00",
+      "unit_price": {
+        "amount_vat_exclusive": null,
+        "amount_vat_inclusive": "240.00",
+        "calculated_amount_vat_exclusive": "240.00",
+        "calculated_amount_vat_inclusive": "240.00",
+        "calculated_vat_amount": "0.00"
+      }
+    }
+  ],
+  "note": [],
+  "payment_info": { "due_date": "2027-01-10" },
+  "supplier_info": {
+    "address1": "Beispielweg 1",
+    "business_name": "",
+    "city": "Zürich",
+    "country_code": "CH",
+    "first_name": "Hanna",
+    "last_name": "Beispiel",
+    "iban_number": "CH93 0076 2011 6238 5295 7",
+    "postal_code": "8000"
+  },
+  "type": "invoice",
+  "version": "1.0"
+}

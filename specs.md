@@ -112,20 +112,20 @@ Page 1, top to bottom:
 2. **Address**: one-line return address (small, rule below) + recipient, inside the always-visible zone. The block must fit 34 mm in height; the CLI fails if it overflows.
 3. **Date | subject**: date in the side column, subject in the main column. Starts below 95 mm.
 4. **Body**, including the `::items` table.
-5. **QR-bill** (invoices): see below.
+5. **QR-bill** (invoices): on its own page, see below.
 
 Pages 2+:
 
-- **Running header**: brand plus document type and number (e.g. `example.org/studio · Rechnung 2026-042`), placed where the address window is on page 1.
-- **Footer** on every page: page `x / y`, name and address, contact, and the Markdown file name (base name only).
+- **Running header** (except on the QR-bill page): brand plus document type and number (e.g. `example.org/studio · Rechnung 2026-042`), placed where the address window is on page 1.
+- **Footer** on every page except the QR-bill page: page `x / y`, name and address, contact, and the Markdown file name (base name only).
 
 The existing grid (aside column + main column, `--column-width`, `--gutter-width`) remains the basis.
 
 ## Invoice details
 
 - Line items, subtotal, VAT and total come from the Banana invoice JSON (Banana's "Invoice Json Object", version 1.0) and are printed as-is.
-- **QR-bill**: generated from the invoice JSON (creditor/IBAN, amount, currency, reference, debtor) as SVG, using a QR-bill library (e.g. `swissqrbill`) *(my call)*. Labels follow `lang`. It takes the bottom 105 mm of the last invoice page if the text leaves room, otherwise it gets its own page, always before the attachment. Needs a measuring pass in Chromium before printing (CSS alone cannot bottom-align it on the last page).
-- **Timesheet attachment** (optional): starts on a new page, after the QR-bill. Title like "Stundenrapport November 2026 · kibo-physio.ch". One row per entry: date, description, hours; total at the end. No separate billable column (hours and billable hours are the same here).
+- **QR-bill**: generated from the invoice JSON (creditor/IBAN, amount, currency, reference, debtor) as SVG, using a QR-bill library (e.g. `swissqrbill`) *(my call)*. Labels follow `lang`. It always gets **its own page** after the letter and before the attachment: no page margins, no footer or running header, with the 210 × 105 mm bill flush with the bottom edge. (Decided 2026-11-17: on a shared page the footer's bottom margin would lift the bill off the edge, and CSS paged media can't give a single page a different margin without a page break.)
+- **Timesheet attachment** (optional): starts on a new page, after the QR-bill page. Title like "Stundenrapport November 2026 · kibo-physio.ch". One row per entry: date, description, hours; total at the end. No separate billable column (hours and billable hours are the same here).
 
 ## Language
 

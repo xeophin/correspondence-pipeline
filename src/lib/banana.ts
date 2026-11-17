@@ -21,6 +21,8 @@ export interface InvoiceItem {
 
 export interface InvoiceView {
 	number: string
+	/** Banana customer account (`customer_info.number`), part of the QR reference. */
+	customerNumber: string
 	date: string
 	currency: string
 	customerAddress: string[]
@@ -100,6 +102,7 @@ export function toInvoiceView(json: unknown): InvoiceView {
 
 	return {
 		number,
+		customerNumber: text(customer, 'number'),
 		date,
 		currency: text(doc, 'currency') || 'CHF',
 		customerAddress,

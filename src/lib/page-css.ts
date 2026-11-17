@@ -1,7 +1,10 @@
 import { t, type Lang } from './i18n.ts'
 
-/** Page margins in mm. Page 1 content is positioned against these (see Address.astro). */
+/** Page margins in mm. Page 1 content is positioned against these (see Document.astro). */
 export const PAGE_MARGIN = { top: 15, right: 15, bottom: 25, left: 20 } as const
+
+/** Top margin from page 2 on, leaving room for the running header. */
+export const CONTINUATION_TOP_MARGIN = 28
 
 /** A quoted CSS string literal. */
 export function cssString(s: string): string {
@@ -22,13 +25,14 @@ export function pageCss({ runningHeader, fileName, footerLines, lang }: PageCssO
 	return `
 @page {
 	size: A4;
-	margin: ${m.top}mm ${m.right}mm ${m.bottom}mm ${m.left}mm;
-	@top-left { content: ${cssString(runningHeader)}; ${box} font-size: 9pt; vertical-align: bottom; }
+	margin: ${CONTINUATION_TOP_MARGIN}mm ${m.right}mm ${m.bottom}mm ${m.left}mm;
+	@top-left { content: ${cssString(runningHeader)}; ${box} font-size: 9pt; vertical-align: bottom; padding-bottom: 8mm; }
 	@bottom-left { content: ${cssString(footerLines.join('\n'))}; ${box} vertical-align: top; padding-top: 4mm; }
 	@bottom-center { content: ${cssString(fileName)}; ${box} vertical-align: top; padding-top: 4mm; }
 	@bottom-right { content: ${cssString(t(lang, 'page') + ' ')} counter(page) ${cssString(' ' + t(lang, 'page.of') + ' ')} counter(pages); ${box} vertical-align: top; padding-top: 4mm; }
 }
 @page :first {
+	margin-top: ${m.top}mm;
 	@top-left { content: none; }
 }
 `

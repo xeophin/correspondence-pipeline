@@ -1,5 +1,11 @@
 ---
 import MainAndSide from './MainAndSide.astro'
+
+interface Props {
+	date: string
+	subject: string
+}
+
 const {date, subject} = Astro.props
 ---
 

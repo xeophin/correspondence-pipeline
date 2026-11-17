@@ -1,15 +1,19 @@
 ---
+import { SENDER } from '../lib/sender.ts'
 
+interface Props {
+	recipient: string[]
+}
+
+const { recipient } = Astro.props
 ---
 
 <section class="address">
 	<address class="return-address trim-line">
-		<slot name="return-address">
-			Hanna Beispiel, Beispielweg 1, 8000 Zürich
-		</slot>
+		{SENDER.name}, {SENDER.street}, {SENDER.zip} {SENDER.city}
 	</address>
 	<address class="recipient trim-line">
-		<slot/>
+		{recipient.map(line => <span>{line}</span>)}
 	</address>
 </section>
 
@@ -21,11 +25,17 @@
 
 		address {
 			font-style: normal;
+			white-space: nowrap;
 
 			&.return-address {
 				font-size: 0.8rem;
 				padding-block-end: 1ex;
 				border-bottom: 1px solid black;
+			}
+
+			&.recipient {
+				display: flex;
+				flex-direction: column;
 			}
 
 		}

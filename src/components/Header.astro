@@ -1,13 +1,17 @@
 ---
+interface Props {
+	sender: 'business' | 'personal'
+	typeLine?: string
+}
 
+const { sender, typeLine } = Astro.props
+const [first, second] = sender === 'business' ? ['example.org', 'studio'] : ['hanna', 'beispiel']
 ---
 
 <header class="columns">
-	<h1><span class="example-org">example.org</span><span class="slash">/</span><span class="studio">studio</span>
+	<h1><span class="brand-first">{first}</span><span class="slash">/</span><span class="brand-second">{second}</span>
 	</h1>
-	<h1 class="document">
-		<slot/>
-	</h1>
+	{typeLine && <h1 class="document">{typeLine}</h1>}
 </header>
 
 <style>
@@ -28,7 +32,7 @@
 			text-box: trim-both ex alphabetic;
 		}
 
-		.example-org {
+		.brand-first {
 			justify-self: end;
 		}
 

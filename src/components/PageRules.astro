@@ -1,0 +1,7 @@
+---
+import { pageCss, type PageCssOptions } from '../lib/page-css.ts'
+
+const css = pageCss(Astro.props as PageCssOptions)
+---
+
+<style is:inline set:html={css}></style>

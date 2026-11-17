@@ -34,8 +34,14 @@ const svg = qrBillSvg(invoice, lang)
 		width: 210mm;
 		height: 105mm;
 		margin-bottom: -1mm;
-		border-top: 0.75pt dashed black;
-		box-sizing: border-box;
+		position: relative;
+
+		&::before {
+			content: '';
+			position: absolute;
+			inset: 0 0 auto;
+			border-top: 0.75pt dashed black;
+		}
 
 		:global(svg) {
 			display: block;

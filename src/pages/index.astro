@@ -1,4 +1,10 @@
 ---
+import Header from '../components/Header.astro'
+import Address from '../components/Address.astro'
+import Subject from '../components/Subject.astro'
+import MainAndSide from '../components/MainAndSide.astro'
+import FullWidth from '../components/FullWidth.astro'
+import Columns from '../components/Columns.astro'
 ---
 
 <html lang="de-CH">
@@ -11,44 +17,45 @@
 <body>
 
 
-<header  class="columns">
-	<h1><span class="example-org">example.org</span><span class="slash">/</span><span class="studio">studio</span>
-	</h1>
-	<h2>Arbeitszeitbericht</h2>
-</header>
+<Header>
+	Rechnung
+</Header>
 
-<section class="subject columns trim-line">
-	<time class="trim-line">2026-11-16</time>
-	<h3 class="trim-line">Arbeitszeitbericht Unterhalt kibo-physio.ch</h3>
-</section>
+<Address>
+	Kibo Sportrehabilitation GmbH <br>
+	Hessstrasse 105 <br>
+	3000 Köniz / Liebefeld <br>
+	Schweiz
+</Address>
 
-<section class="content columns all-main">
-	<div>
+<Subject date="11. 12. 2026" subject="Unterhalt kibo-physio.ch 2026/27" />
+
+<MainAndSide>
 		<p>Liebe Something,</p>
-	<p>This is, propably, just very small text. And this is okay. We can live with that.</p>
-	<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad, aliquam aut doloribus eos exercitationem expedita
-		ipsa libero magni maxime minima pariatur quaerat quia quis sed similique suscipit temporibus, totam veniam.</p>
-	<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci alias illum laudantium maxime nemo nulla odit
-		provident reiciendis? Cum eaque expedita laboriosam officiis optio reiciendis reprehenderit, sed sit totam
-		voluptatum.</p>
-	<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias assumenda autem cum debitis delectus deserunt
-		dolorum eligendi error eum, exercitationem fuga in nisi quas quibusdam quis vitae voluptatum? Autem, quaerat.</p>
-<p>Herzliche Grüsse,</p>
+		<p>This is, propably, just very small text. And this is okay. We can live with that.</p>
+		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad, aliquam aut doloribus eos exercitationem expedita
+			ipsa libero magni maxime minima pariatur quaerat quia quis sed similique suscipit temporibus, totam veniam.</p>
+		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci alias illum laudantium maxime nemo nulla odit
+			provident reiciendis? Cum eaque expedita laboriosam officiis optio reiciendis reprehenderit, sed sit totam
+			voluptatum.</p>
+		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias assumenda autem cum debitis delectus deserunt
+			dolorum eligendi error eum, exercitationem fuga in nisi quas quibusdam quis vitae voluptatum? Autem, quaerat.</p>
+		<p>Herzliche Grüsse,</p>
 		<p>Hanna</p>
-	</div>
-</section>
+</MainAndSide>
 
-<section class="address">
-	<address class="return-address trim-line">
-		Hanna Beispiel, Beispielweg 1, 8000 Zürich
-	</address>
-	<address class="recipient trim-line">
-		Kibo Sportrehabilitation GmbH <br>
-		Hessstrasse 105 <br>
-		3000 Köniz / Liebefeld <br>
-		Schweiz
-	</address>
-</section>
+<FullWidth>
+	[[insert_table_here]]
+</FullWidth>
+
+<footer>
+<Columns>
+<p>hanna beispiel example.org/studio</p>
+	<p>Beispielweg 1 <br>8000 Zürich</p>
+	<p>hanna@example.org <br> +41 44 000 00 00</p>
+</Columns>
+	</footer>
+
 </body>
 </html>
 
@@ -59,9 +66,33 @@
 		line-height: 1.45;
 	}
 
+	body {
+				display: flex;
+		flex-direction: column;
+		gap: 1rlh;
+	}
+
+footer {
+	font-size: 0.8rem;
+}
+
+</style>
+
+<style is:global>
+	h1, h2, h3 {
+		font-size: inherit;
+		margin: 0;
+		line-height: 1rlh;
+	}
+
+	:root {
+		--column-width: 9.5rem;
+		--gutter-width: 3mm;
+	}
+
 	.columns {
 		display: grid;
-		grid-template-columns: [aside-start] 7.75rem [aside-end gutter-start] 3mm [gutter-end main-start] auto [main-end];
+		grid-template-columns: [aside-start] var(--column-width) [aside-end gutter-start] var(--gutter-width) [gutter-end main-start] auto [main-end];
 
 		* {
 			//border: 1px solid salmon;
@@ -77,85 +108,4 @@
 	.trim-line {
 		text-box: trim-end cap alphabetic;
 	}
-
-
-	.subject {
-		margin-block: 1rlh;
-
-		time {
-			grid-area: aside;
-			justify-self: end;
-			color: darkmagenta;
-		}
-
-		h3 {
-			grid-area: main;
-			font-weight: 500;
-		}
-
-	}
-
-	header {
-
-		//text-transform: uppercase;
-		font-size: 1.33rem;
-
-		letter-spacing: 0.05ch;
-	}
-
-	h1, h2, h3 {
-		font-size: inherit;
-		margin: 0;
-		line-height: 1rlh;
-	}
-
-	h1 {
-		display: grid;
-		grid-column: 1 / -1;
-		grid-template-columns: subgrid;
-		font-weight: 400;
-align-items: center;
-
-		> * {
-			text-box: trim-both ex alphabetic;
-		}
-
-		.example-org {
-			justify-self: end;
-		}
-
-		.slash {
-			color: darkmagenta;
-			text-box-edge: cap alphabetic;
-			place-self: center;
-			font-size: 1.5em;
-			font-weight: 300;
-		}
-	}
-
-	h2 {
-		font-weight: 500;
-		grid-area: main;
-		text-box: trim-both cap alphabetic;
-	}
-
-	.address {
-		display: flex;
-		flex-direction: column;
-		gap: 1rlh;
-
-		address {
-			font-style: normal;
-
-			&.return-address
-			{
-				font-size: 0.8rem;
-				padding-block-end: 1ex;
-				border-bottom: 1px solid black;
-			}
-
-		}
-	}
-
-
 </style>

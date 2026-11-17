@@ -1,0 +1,51 @@
+---
+
+---
+
+<header class="columns">
+	<h1><span class="example-org">example.org</span><span class="slash">/</span><span class="studio">studio</span>
+	</h1>
+	<h1 class="document">
+		<slot/>
+	</h1>
+</header>
+
+<style>
+	header {
+		font-size: 1.33rem;
+		letter-spacing: 0.05ch;
+	}
+
+
+	h1 {
+		display: grid;
+		grid-column: 1 / -1;
+		grid-template-columns: subgrid;
+		font-weight: 400;
+		align-items: center;
+
+		> * {
+			text-box: trim-both ex alphabetic;
+		}
+
+		.example-org {
+			justify-self: end;
+		}
+
+		.slash {
+			color: darkmagenta;
+			text-box-edge: cap alphabetic;
+			place-self: center;
+			font-size: 1.5em;
+			font-weight: 300;
+		}
+
+			&.document {
+		font-weight: 500;
+		grid-area: main;
+		text-box: trim-both cap alphabetic;
+	}
+	}
+
+
+</style>

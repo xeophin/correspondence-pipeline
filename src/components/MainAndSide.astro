@@ -1,0 +1,34 @@
+---
+
+---
+
+<section class="columns trim-line">
+	{Astro.slots.has('side') && (
+					<aside>
+						<slot name="side"/>
+					</aside>
+	)}
+
+	<main>
+		<slot/>
+	</main>
+
+</section>
+
+<style>
+	section {
+		* {
+			text-box: trim-both cap alphabetic;
+		}
+
+		aside {
+			grid-area: aside;
+			justify-self: end;
+		}
+
+		main {
+			grid-area: main
+		}
+
+	}
+</style>

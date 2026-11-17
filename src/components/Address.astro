@@ -1,0 +1,33 @@
+---
+
+---
+
+<section class="address">
+	<address class="return-address trim-line">
+		<slot name="return-address">
+			Hanna Beispiel, Beispielweg 1, 8000 Zürich
+		</slot>
+	</address>
+	<address class="recipient trim-line">
+		<slot/>
+	</address>
+</section>
+
+<style>
+	.address {
+		display: flex;
+		flex-direction: column;
+		gap: 1rlh;
+
+		address {
+			font-style: normal;
+
+			&.return-address {
+				font-size: 0.8rem;
+				padding-block-end: 1ex;
+				border-bottom: 1px solid black;
+			}
+
+		}
+	}
+</style>

@@ -1,0 +1,24 @@
+---
+import MainAndSide from './MainAndSide.astro'
+const {date, subject} = Astro.props
+---
+
+<MainAndSide>
+	<time slot="side" class="trim-line">{date}</time>
+	<h2 class="trim-line">{subject}</h2>
+</MainAndSide>
+
+<style>
+
+
+	time {
+		color: darkmagenta;
+	}
+
+	h2 {
+
+		font-weight: 500;
+	}
+
+
+</style>

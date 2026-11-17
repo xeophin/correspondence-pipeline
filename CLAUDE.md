@@ -26,11 +26,9 @@ Package manager is pnpm (Node >= 22.23.4). Astro 7.
 
 There is no test or lint setup yet.
 
-## Open architecture decision
+## Architecture
 
-Not yet decided: whether Astro also merges the Markdown with the templates (e.g. via a content collection that reads the frontmatter, one page per letter), or whether Astro only builds templates containing placeholders that a separate process fills in. Do not assume either; ask or propose before building on one. When decided, record it in the log below and update this section.
-
-The HTML-to-PDF step (tool/engine) is also undecided.
+The full spec is in `specs.md`. In short: a `letter <file.md>` CLI passes one Markdown file (living outside this repo) to Astro. A custom content loader reads it plus any Banana Accounting JSON it references, and Astro builds one page. Playwright/Chromium prints that page to a PDF next to the Markdown file.
 
 ## Keeping context across sessions
 
@@ -43,3 +41,6 @@ Claude's own session memory is not part of the repo, so durable project knowledg
 ## Decision log
 
 - 2026-11-17: Repo initialised from the Astro minimal template; pipeline concept defined (see Purpose). Merge strategy and PDF engine still open.
+- 2026-11-17: Merge in Astro (custom content loader, one page per document), not placeholders filled by a separate process: Astro already templates, and dev preview keeps working.
+- 2026-11-17: PDF via headless Chromium (Playwright). The components use `text-box`, `rlh`, subgrid and nesting, which only Chromium renders. Vivliostyle is the fallback; WeasyPrint was rejected (CSS rewrite only to gain PDF/A).
+- 2026-11-17: Banana Accounting Plus is the source for invoice/offer/timesheet data, via our own Banana extension that exports JSON. The template never recomputes amounts.

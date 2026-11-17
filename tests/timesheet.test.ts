@@ -29,3 +29,7 @@ test('the attachment title names the month, or the date range across months', ()
 	expect(timesheetTitle('en', { ...valid, period: { start: '2026-10-15', end: '2026-11-30' } }))
 		.toBe('Timesheet 15 October 2026 – 30 November 2026 · muster-ag.ch')
 })
+
+test('rejects impossible entry dates', () => {
+	expect(() => parseTimesheet({ ...valid, entries: [{ ...valid.entries[0], date: '2026-11-31' }], total: 1.5 })).toThrow(/date/)
+})

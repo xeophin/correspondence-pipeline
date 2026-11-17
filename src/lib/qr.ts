@@ -27,12 +27,14 @@ export function qrBillSvg(invoice: InvoiceView, lang: Lang): string {
 				city: SENDER.city,
 				country: SENDER.country,
 			},
-			debtor: {
-				name: invoice.debtor.name,
-				...splitStreet(invoice.debtor.address),
-				zip: invoice.debtor.zip,
-				city: invoice.debtor.city,
-				country: invoice.debtor.country,
+			...invoice.debtor && {
+				debtor: {
+					name: invoice.debtor.name,
+					...splitStreet(invoice.debtor.address),
+					zip: invoice.debtor.zip,
+					city: invoice.debtor.city,
+					country: invoice.debtor.country,
+				},
 			},
 			message: `${t(lang, 'type.invoice')} ${invoice.number}`,
 		}, { language: lang === 'de' ? 'DE' : 'EN' }).toString()

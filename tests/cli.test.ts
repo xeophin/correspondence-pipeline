@@ -82,3 +82,20 @@ test('an invalid IBAN in the Banana JSON stops before building', () => {
 	expect(result.stderr).toMatch(/^letter: .*QR-bill/)
 	expect(existsSync(join(dir, 'r.pdf'))).toBe(false)
 })
+
+test('a five-line address fits the envelope window', () => {
+	const md = readFileSync('examples/letter.md', 'utf8').replace('  3000 Bern', '  Postfach\n  3000 Bern')
+	const { md: path, pdf } = tempDoc('fuenf.md', md)
+	const result = run(path)
+	expect(result.stderr).toBe('')
+	expect(existsSync(pdf)).toBe(true)
+})
+
+test('a relative LETTER_CONFIG resolves against the working directory', () => {
+	const cwd = mkdtempSync(join(tmpdir(), 'letter-cwd-'))
+	writeFileSync(join(cwd, 'config.json'), JSON.stringify({ signature: resolve('tests/fixtures/signature.png') }))
+	const { md, pdf } = tempDoc('brief.md', readFileSync('examples/letter.md', 'utf8').replace('type: letter', 'type: letter\nsignature: true'))
+	const result = spawnSync(process.execPath, [CLI, md], { cwd, encoding: 'utf8', env: { ...process.env, LETTER_CONFIG: './config.json' } })
+	expect(result.stderr).toBe('')
+	expect(existsSync(pdf)).toBe(true)
+})

@@ -21,7 +21,7 @@ const { recipient } = Astro.props
 	.address {
 		display: flex;
 		flex-direction: column;
-		gap: 1rlh;
+		gap: 2mm;
 
 		address {
 			font-style: normal;
@@ -36,6 +36,8 @@ const { recipient } = Astro.props
 			&.recipient {
 				display: flex;
 				flex-direction: column;
+				/* five lines must fit the 34 mm window (C5, SN 010130) */
+				line-height: 1.3;
 			}
 
 		}

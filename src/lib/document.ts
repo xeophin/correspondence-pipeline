@@ -3,6 +3,7 @@ import { basename, dirname, resolve } from 'node:path'
 import { parse as parseYaml } from 'yaml'
 import { z } from 'zod'
 import { toInvoiceView, type InvoiceView } from './banana.ts'
+import { isIsoDate } from './dates.ts'
 import { LetterError } from './errors.ts'
 import type { Lang } from './i18n.ts'
 import { parseTimesheet, type Timesheet } from './timesheet.ts'
@@ -32,7 +33,7 @@ const frontmatterSchema = z.strictObject({
 	type: z.enum(['letter', 'invoice']),
 	sender: z.enum(['business', 'personal']).default('business'),
 	lang: z.enum(['de', 'en']).default('de'),
-	date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'expected a date like 2026-12-11').optional(),
+	date: z.string().refine(isIsoDate, 'expected a real date like 2026-12-11').optional(),
 	subject: z.string().min(1),
 	recipient: z.union([z.string(), z.array(z.string())]).optional(),
 	invoice: z.string().optional(),
@@ -107,8 +108,13 @@ export function loadDocument(mdPath: string): LetterDocument {
 	const bodyAfter = marker === -1 ? '' : bodyLines.slice(marker + 1).join('\n')
 
 	const dir = dirname(sourcePath)
-	const invoice = fm.invoice ? toInvoiceView(readJson(resolve(dir, fm.invoice), 'invoice JSON')) : undefined
+	let invoice = fm.invoice ? toInvoiceView(readJson(resolve(dir, fm.invoice), 'invoice JSON')) : undefined
+	// An address fixed in the frontmatter must not be contradicted by Banana's on the QR-bill.
+	if (invoice && fm.recipient) invoice = { ...invoice, debtor: undefined }
 	const timesheet = fm.timesheet ? parseTimesheet(readJson(resolve(dir, fm.timesheet), 'timesheet JSON')) : undefined
+
+	const recipient = fm.recipient ? lines(fm.recipient) : invoice!.customerAddress
+	if (recipient.length === 0) fail('recipient is empty (frontmatter recipient or Banana customer address)')
 
 	return {
 		sourcePath,
@@ -119,7 +125,7 @@ export function loadDocument(mdPath: string): LetterDocument {
 		date: fm.date ?? invoice!.date,
 		subject: fm.subject,
 		title: fm.title,
-		recipient: fm.recipient ? lines(fm.recipient) : invoice!.customerAddress,
+		recipient,
 		signature: fm.signature,
 		bodyBefore,
 		bodyAfter,

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { writeFile } from 'node:fs/promises'
-import { dirname, join, parse } from 'node:path'
+import { join, parse, resolve } from 'node:path'
+import { configPath } from '../lib/config.ts'
 import { loadDocument } from '../lib/document.ts'
 import { LetterError } from '../lib/errors.ts'
 import { qrBillSvg } from '../lib/qr.ts'
@@ -15,6 +16,8 @@ const FONT = 'Unica 77 LL'
 
 async function main(args: string[]): Promise<void> {
 	if (args.length !== 1) throw new LetterError('usage: letter <file.md>')
+	// The build runs with the repo as cwd: pin a relative config path to the caller's cwd first.
+	process.env.LETTER_CONFIG = resolve(configPath())
 	const doc = loadDocument(args[0])
 	// Validate here: errors inside the Astro build lose their LetterError type.
 	if (doc.invoice) qrBillSvg(doc.invoice, doc.lang)

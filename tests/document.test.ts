@@ -1,4 +1,4 @@
-import { mkdtempSync, writeFileSync } from 'node:fs'
+import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, expect, test } from 'vitest'
@@ -102,4 +102,29 @@ test('loads a timesheet referenced by an invoice', () => {
 	}))
 	const doc = loadDocument(writeDoc(dir, 'r.md', INVOICE.replace('invoice: ./invoice.json', 'invoice: ./invoice.json\ntimesheet: ./hours.json')))
 	expect(doc.timesheet?.total).toBe(1.5)
+})
+
+test('rejects impossible dates', () => {
+	for (const date of ['2026-02-30', '2026-13-01']) {
+		const path = writeDoc(docDir(), 'b.md', LETTER_FRONTMATTER.replace('2026-12-11', date))
+		expect(() => loadDocument(path), date).toThrow(LetterError)
+	}
+})
+
+test('rejects an empty recipient', () => {
+	const path = writeDoc(docDir(), 'b.md', LETTER_FRONTMATTER.replace(/recipient: \|\n(  .*\n)+/, 'recipient: " "\n'))
+	expect(() => loadDocument(path)).toThrow(/recipient/)
+})
+
+test('rejects an invoice whose Banana customer has no address', () => {
+	const dir = docDir()
+	const json = JSON.parse(readFileSync(join(dir, 'invoice.json'), 'utf8'))
+	for (const key of Object.keys(json.customer_info)) json.customer_info[key] = ''
+	writeFileSync(join(dir, 'invoice.json'), JSON.stringify(json))
+	expect(() => loadDocument(writeDoc(dir, 'r.md', INVOICE))).toThrow(/recipient/)
+})
+
+test('a frontmatter recipient drops Banana\'s debtor from the QR-bill', () => {
+	const md = INVOICE.replace('invoice: ./invoice.json', 'invoice: ./invoice.json\nrecipient: |\n  Andere GmbH\n  8000 Zürich')
+	expect(loadDocument(writeDoc(docDir(), 'r.md', md)).invoice?.debtor).toBeUndefined()
 })

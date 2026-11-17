@@ -1,9 +1,10 @@
 import { z } from 'zod'
+import { isIsoDate } from './dates.ts'
 import { LetterError } from './errors.ts'
 import { formatDate, formatMonth, t, type Lang } from './i18n.ts'
 import { describeIssues } from './zod-errors.ts'
 
-const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'expected a date like 2026-11-30')
+const isoDate = z.string().refine(isIsoDate, 'expected a real date like 2026-11-30')
 
 const timesheetSchema = z.strictObject({
 	project: z.strictObject({ id: z.string(), description: z.string() }),

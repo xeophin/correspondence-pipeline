@@ -53,3 +53,8 @@ test('an English invoice gets an English QR-bill', async () => {
 	const { pages } = await renderPdf(writeDoc(docDir(), 'invoice.md', md))
 	expect(pageText(pages.at(-1)!)).toContain('Receipt')
 })
+
+test('without a debtor the QR-bill leaves the payer blank', () => {
+	const svg = qrBillSvg({ ...view(), debtor: undefined }, 'de')
+	expect(svg).not.toContain('Musterstrasse 12')
+})

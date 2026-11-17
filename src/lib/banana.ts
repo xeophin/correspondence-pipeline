@@ -1,3 +1,4 @@
+import { isIsoDate } from './dates.ts'
 import { LetterError } from './errors.ts'
 
 /** A Swiss QR-bill address. */
@@ -23,7 +24,8 @@ export interface InvoiceView {
 	date: string
 	currency: string
 	customerAddress: string[]
-	debtor: QrAddress
+	/** Absent when the frontmatter overrides the address. */
+	debtor?: QrAddress
 	creditorIban?: string
 	items: InvoiceItem[]
 	total: number
@@ -94,7 +96,7 @@ export function toInvoiceView(json: unknown): InvoiceView {
 	const number = text(doc, 'number')
 	const date = text(doc, 'date')
 	if (!number) throw new LetterError('Banana invoice JSON: missing document_info.number')
-	if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) throw new LetterError('Banana invoice JSON: missing document_info.date')
+	if (!isIsoDate(date)) throw new LetterError(`Banana invoice JSON: document_info.date is not a date (${JSON.stringify(date)})`)
 
 	return {
 		number,

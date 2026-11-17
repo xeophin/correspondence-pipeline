@@ -43,3 +43,9 @@ test('rejects item types it does not know how to print', () => {
 	json.items[1].item_type = 'total'
 	expect(() => toInvoiceView(json)).toThrow(/item_type.*total/)
 })
+
+test('rejects an impossible document date', () => {
+	const json = example()
+	json.document_info.date = '2026-02-30'
+	expect(() => toInvoiceView(json)).toThrow(/document_info\.date/)
+})

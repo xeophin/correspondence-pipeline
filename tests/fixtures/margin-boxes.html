@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+	<meta charset="utf-8">
+	<style>
+		@page {
+			size: A4;
+			margin: 20mm;
+			@bottom-right { content: "Seite " counter(page) " von " counter(pages); }
+			@top-left { content: "RUNNING"; }
+		}
+		@page :first {
+			@top-left { content: none; }
+		}
+		body { font-family: "Unica 77 LL", monospace; }
+		.second { break-before: page; }
+	</style>
+</head>
+<body>
+	<p>First page</p>
+	<p class="second">Second page</p>
+</body>
+</html>

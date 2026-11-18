@@ -60,7 +60,7 @@ const accentColor = `oklch(${lightness} ${chroma} ${hue})`
 </head>
 <body>
 	<div class="first-page-head" style={`--address-top: ${addressTop}mm; --address-left: ${addressLeft}mm; height: ${firstPageHeadHeight}mm`}>
-		<Header sender={doc.sender} typeLine={typeLine}/>
+		<Header {brand} typeLine={typeLine}/>
 		<div class="address-position">
 			<Address recipient={doc.recipient}/>
 		</div>

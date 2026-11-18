@@ -1,11 +1,11 @@
 ---
 interface Props {
-	sender: 'business' | 'personal'
+	brand: `${string}/${string}`
 	typeLine?: string
 }
 
-const { sender, typeLine } = Astro.props
-const [first, second] = sender === 'business' ? ['example.org', 'studio'] : ['hanna', 'beispiel']
+const { brand = 'example.org/studio', typeLine } = Astro.props
+const [first, second] = brand.split('/')
 ---
 
 <header class="columns">

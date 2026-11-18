@@ -34,8 +34,14 @@ test('names the missing field', () => {
 
 test('rejects amounts that are not numbers', () => {
 	const json = example()
-	json.billing_info.total_to_pay = ''
+	json.billing_info.total_to_pay = 'n/a'
 	expect(() => toInvoiceView(json)).toThrow(/total_to_pay/)
+})
+
+test('an empty total means nothing is due', () => {
+	const json = example()
+	json.billing_info.total_to_pay = ''
+	expect(toInvoiceView(json).total).toBe(0)
 })
 
 test('rejects item types it does not know how to print', () => {

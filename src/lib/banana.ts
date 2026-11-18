@@ -121,6 +121,7 @@ export function toInvoiceView(json: unknown): InvoiceView {
 		},
 		creditorIban: text(supplier, 'iban_number') || undefined,
 		items,
-		total: amount(billing, 'total_to_pay', 'billing_info.'),
+		// Banana leaves the totals empty when nothing is due (pro-forma, fully prepaid).
+		total: text(billing, 'total_to_pay') === '' ? 0 : amount(billing, 'total_to_pay', 'billing_info.'),
 	}
 }

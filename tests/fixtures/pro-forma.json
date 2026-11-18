@@ -1,0 +1,98 @@
+{
+  "billing_info": {
+    "payment_term": "",
+    "total_amount_vat_exclusive": "",
+    "total_amount_vat_exclusive_before_discount": "",
+    "total_amount_vat_inclusive": "",
+    "total_amount_vat_inclusive_before_discount": "",
+    "total_discount_percent": "",
+    "total_discount_vat_exclusive": "",
+    "total_discount_vat_inclusive": "",
+    "total_rounding_difference": "",
+    "total_to_pay": "",
+    "total_vat_amount": "",
+    "total_vat_amount_before_discount": "",
+    "total_categories": [],
+    "total_vat_codes": [],
+    "total_vat_rates": []
+  },
+  "customer_info": {
+    "address1": "Musterweg",
+    "building_number": "27B",
+    "business_name": "Muster GmbH",
+    "city": "Liebefeld",
+    "country": "Schweiz",
+    "country_code": "CH",
+    "currency": "CHF",
+    "number": "110006",
+    "postal_code": "3097"
+  },
+  "document_info": {
+    "currency": "CHF",
+    "date": "2026-11-18",
+    "decimals_amounts": 2,
+    "description": "",
+    "doc_type": "10",
+    "locale": "de",
+    "number": "R202511-02/2",
+    "rounding_total": "0.05",
+    "title": "Schlussrechnung Unterhalt muster.ch",
+    "type": "invoice"
+  },
+  "items": [
+    {
+      "description": "Unterhalt der Website",
+      "item_type": "item",
+      "mesure_unit": "",
+      "number": "",
+      "index": "0",
+      "quantity": "1.0000",
+      "total_amount_vat_exclusive": "400.00",
+      "total_amount_vat_inclusive": "400.00",
+      "total_vat_amount": "",
+      "unit_price": {
+        "amount_vat_inclusive": "400.00",
+        "calculated_amount_vat_exclusive": "400.00",
+        "calculated_amount_vat_inclusive": "400.00",
+        "calculated_vat_amount": "",
+        "currency": "CHF",
+        "vat_code": "",
+        "vat_rate": ""
+      }
+    },
+    {
+      "description": "Abzüglich Überweisung vom 3.11.2026",
+      "item_type": "item",
+      "mesure_unit": "",
+      "number": "",
+      "index": "1",
+      "quantity": "1.0000",
+      "total_amount_vat_exclusive": "-400.00",
+      "total_amount_vat_inclusive": "-400.00",
+      "total_vat_amount": "",
+      "unit_price": {
+        "amount_vat_inclusive": "-400.00",
+        "calculated_amount_vat_exclusive": "-400.00",
+        "calculated_amount_vat_inclusive": "-400.00",
+        "calculated_vat_amount": "",
+        "currency": "CHF",
+        "vat_code": "",
+        "vat_rate": ""
+      }
+    }
+  ],
+  "note": [],
+  "payment_info": {
+    "due_date": "2026-12-18"
+  },
+  "supplier_info": {
+    "address1": "Beispielweg",
+    "building_number": "1",
+    "city": "Zürich",
+    "country_code": "CH",
+    "iban_number": "CH44 3199 9123 0008 8901 2",
+    "postal_code": "8000"
+  },
+  "type": "invoice",
+  "version": "1.0"
+}

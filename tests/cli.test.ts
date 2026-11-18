@@ -1,7 +1,7 @@
 import { spawnSync } from 'node:child_process'
-import { existsSync, mkdtempSync, readFileSync, statSync, utimesSync, writeFileSync } from 'node:fs'
+import { copyFileSync, existsSync, mkdtempSync, readFileSync, statSync, utimesSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
-import { join, resolve } from 'node:path'
+import { dirname, join, resolve } from 'node:path'
 import { expect, test } from 'vitest'
 import { pageText, pdfPages } from './helpers/pdf.ts'
 import { LETTER_FRONTMATTER } from './helpers/docs.ts'
@@ -98,4 +98,17 @@ test('a relative LETTER_CONFIG resolves against the working directory', () => {
 	const result = spawnSync(process.execPath, [CLI, md], { cwd, encoding: 'utf8', env: { ...process.env, LETTER_CONFIG: './config.json' } })
 	expect(result.stderr).toBe('')
 	expect(existsSync(pdf)).toBe(true)
+})
+
+test('a pro-forma invoice (Banana leaves the totals empty) prints without a QR-bill', async () => {
+	const { md, pdf } = tempDoc('pro-forma.md', '---\ntype: invoice\ninvoice: ./pro-forma.json\n---\nGuten Tag\n')
+	copyFileSync('tests/fixtures/pro-forma.json', join(dirname(md), 'pro-forma.json'))
+	const result = run(md)
+	expect(result.stderr).toBe('')
+	expect(result.status).toBe(0)
+	const pages = await pdfPages(readFileSync(pdf))
+	expect(pages).toHaveLength(1)
+	expect(pageText(pages[0])).toContain('Schlussrechnung Unterhalt muster.ch')
+	expect(pageText(pages[0])).toContain('Musterweg 27B')
+	expect(pageText(pages[0])).not.toContain('Zahlteil')
 })

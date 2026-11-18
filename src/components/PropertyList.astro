@@ -1,0 +1,49 @@
+---
+interface Props {
+	propertyList: [string, string][]
+}
+
+const {
+	propertyList
+}: Props = Astro.props
+---
+
+<dl>
+	{propertyList.map(prop =>
+			(
+							<dt>{prop[0]}</dt>
+							<dd>{prop[1]}</dd>
+			)
+	)}
+</dl>
+
+<style>
+	dl {
+		font-size: 9pt;
+		display: grid;
+		grid-template-columns: [key-start] var(--column-width) [key-end value-start] var(--column-width) [value-end];
+		column-gap: var(--gutter-width);
+		row-gap: calc(1rlh - 1cap);
+		align-items: baseline;
+
+		* {
+			text-box: trim-both cap alphabetic;
+			margin: 0;
+		}
+
+		dt {
+			justify-self: end;
+			grid-column: key;
+			font-size: 7.5pt;
+			text-transform: uppercase;
+			letter-spacing: 0.075ch;
+			font-weight: 500;
+			opacity: 0.65;
+		}
+
+		dd {
+			grid-column: value;
+			justify-self: start;
+		}
+	}
+</style>

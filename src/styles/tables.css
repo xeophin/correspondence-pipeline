@@ -8,6 +8,10 @@ table {
 		vertical-align: top;
 		text-align: left;
 		font-weight: 400;
+
+		&:not(.number) {
+			text-wrap: pretty;
+		}
 	}
 
 	.number {

@@ -26,7 +26,7 @@ export function parseTimesheet(json: unknown): Timesheet {
 	return result.data
 }
 
-/** "Stundenrapport November 2026 · project", or a date range when the period spans months. */
+/** "Stundenrapport November 2026 / project", or a date range when the period spans months. */
 export function timesheetTitle(lang: Lang, timesheet: Timesheet): string {
 	const { start, end } = timesheet.period
 	const period = start.slice(0, 7) === end.slice(0, 7)

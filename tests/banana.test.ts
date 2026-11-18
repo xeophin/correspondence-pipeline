@@ -49,3 +49,12 @@ test('rejects an impossible document date', () => {
 	json.document_info.date = '2026-02-30'
 	expect(() => toInvoiceView(json)).toThrow(/document_info\.date/)
 })
+
+test('keeps a separate building number', () => {
+	const json = example()
+	json.customer_info.address1 = 'Musterstrasse'
+	json.customer_info.building_number = '12a'
+	const view = toInvoiceView(json)
+	expect(view.customerAddress).toContain('Musterstrasse 12a')
+	expect(view.debtor).toMatchObject({ address: 'Musterstrasse', buildingNumber: '12a' })
+})

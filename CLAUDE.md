@@ -34,7 +34,7 @@ pnpm and fnm's Node are not readable inside Claude Code's sandbox; pnpm commands
 
 - `src/lib/` — plain TS run by Node directly (erasable syntax only, `.ts` import extensions): document model and validation, Banana mapping, i18n, page CSS, QR-bill, signature, user config (`~/.config/letter/config.json` or `$LETTER_CONFIG`)
 - `src/cli/` — the `letter` command: build (Astro into `.astro/builds/`, cwd = repo, because Astro's prerender step must sit inside cwd), serve, print, verify layout against the envelope window
-- `src/layouts/Document.astro`, `src/components/` — the templates
+- `src/layouts/Document.astro`, `src/components/` — the templates; `src/styles/tables.css` styles every table (items, timesheet, Markdown body)
 - `banana/` — Banana Accounting extensions that export invoice and timesheet JSON
 - `examples/` — fictional documents for tests and preview
 
@@ -59,3 +59,6 @@ Claude's own session memory is not part of the repo, so durable project knowledg
 - 2026-11-17: PDF via headless Chromium (Playwright). The components use `text-box`, `rlh`, subgrid and nesting, which only Chromium renders. Vivliostyle is the fallback; WeasyPrint was rejected (CSS rewrite only to gain PDF/A).
 - 2026-11-17: Banana Accounting Plus is the source for invoice/offer/timesheet data, via our own Banana extension that exports JSON. The template never recomputes amounts.
 - 2026-11-17: No VAT: the business is below the registration threshold. Invoices show line items and the total only (no VAT rows, no subtotal). The QR-bill always gets its own page (a shared page's footer margin would lift it off the bottom edge).
+- 2026-11-18: No font check before printing: the CSS has a fallback, and a missing Unica 77 LL is the user's to notice.
+- 2026-11-18: Running header is brand / subject; `/` is the separator everywhere (header, footer, timesheet title). Invoices may omit `subject`; it falls back to Banana's `document_info.title`.
+- 2026-11-18: Pro-forma invoices (`total_to_pay` 0) get no QR-bill.

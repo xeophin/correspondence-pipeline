@@ -34,7 +34,7 @@ const frontmatterSchema = z.strictObject({
 	sender: z.enum(['business', 'personal']).default('business'),
 	lang: z.enum(['de', 'en']).default('de'),
 	date: z.string().refine(isIsoDate, 'expected a real date like 2026-12-11').optional(),
-	subject: z.string().min(1),
+	subject: z.string().min(1).optional(),
 	recipient: z.union([z.string(), z.array(z.string())]).optional(),
 	invoice: z.string().optional(),
 	timesheet: z.string().optional(),
@@ -86,6 +86,7 @@ export function loadDocument(mdPath: string): LetterDocument {
 		if (fm.invoice || fm.timesheet) fail('invoice and timesheet need type: invoice')
 		if (!fm.date) fail('date is required for letters')
 		if (!fm.recipient) fail('recipient is required for letters')
+		if (!fm.subject) fail('subject is required for letters')
 	} else if (!fm.invoice) {
 		fail('invoice (path to the Banana invoice JSON) is required for invoices')
 	}
@@ -113,6 +114,9 @@ export function loadDocument(mdPath: string): LetterDocument {
 	if (invoice && fm.recipient) invoice = { ...invoice, debtor: undefined }
 	const timesheet = fm.timesheet ? parseTimesheet(readJson(resolve(dir, fm.timesheet), 'timesheet JSON')) : undefined
 
+	const subject = fm.subject ?? invoice!.title
+	if (!subject) fail('subject is missing (frontmatter subject or Banana document title)')
+
 	const recipient = fm.recipient ? lines(fm.recipient) : invoice!.customerAddress
 	if (recipient.length === 0) fail('recipient is empty (frontmatter recipient or Banana customer address)')
 
@@ -123,7 +127,7 @@ export function loadDocument(mdPath: string): LetterDocument {
 		sender: fm.sender,
 		lang: fm.lang,
 		date: fm.date ?? invoice!.date,
-		subject: fm.subject,
+		subject,
 		title: fm.title,
 		recipient,
 		signature: fm.signature,

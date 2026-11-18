@@ -9,7 +9,7 @@ beforeAll(async () => { pages = (await renderPdf('examples/invoice/invoice-with-
 test('the attachment follows the QR-bill page', () => {
 	expect(pages).toHaveLength(3)
 	expect(pageText(pages[1])).toContain('Zahlteil')
-	expect(pageText(pages[2])).toContain('Stundenrapport November 2026 · muster-ag.ch')
+	expect(pageText(pages[2])).toContain('Stundenrapport November 2026 / muster-ag.ch')
 })
 
 test('it lists every entry and the total', () => {
@@ -23,6 +23,6 @@ test('it lists every entry and the total', () => {
 
 test('it carries the running header and the footer', () => {
 	const text = pageText(pages[2])
-	expect(text).toContain('example.org/studio · Rechnung 2026-042')
+	expect(text).toContain('example.org/studio / Unterhalt muster-ag.ch')
 	expect(text).toContain('Seite 3 von 3')
 })

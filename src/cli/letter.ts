@@ -4,15 +4,13 @@ import { join, parse, resolve } from 'node:path'
 import { configPath } from '../lib/config.ts'
 import { loadDocument } from '../lib/document.ts'
 import { LetterError } from '../lib/errors.ts'
-import { qrBillSvg } from '../lib/qr.ts'
+import { hasQrBill, qrBillSvg } from '../lib/qr.ts'
 import { loadSignature } from '../lib/signature.ts'
 import { buildDocument } from './build.ts'
 import { pdfPages } from './pdf-text.ts'
-import { checkFont, printPdf, withPage } from './print.ts'
+import { printPdf, withPage } from './print.ts'
 import { serveDir } from './serve.ts'
 import { verifyLayout } from './verify.ts'
-
-const FONT = 'Unica 77 LL'
 
 async function main(args: string[]): Promise<void> {
 	if (args.length !== 1) throw new LetterError('usage: letter <file.md>')
@@ -20,16 +18,13 @@ async function main(args: string[]): Promise<void> {
 	process.env.LETTER_CONFIG = resolve(configPath())
 	const doc = loadDocument(args[0])
 	// Validate here: errors inside the Astro build lose their LetterError type.
-	if (doc.invoice) qrBillSvg(doc.invoice, doc.lang)
+	if (doc.invoice && hasQrBill(doc.invoice)) qrBillSvg(doc.invoice, doc.lang)
 	loadSignature(doc)
 	const build = await buildDocument(doc.sourcePath)
 	try {
 		const server = await serveDir(build.dir)
 		try {
-			const pdf = await withPage(server.url + '/', async page => {
-				if (!await checkFont(page, FONT)) throw new LetterError(`font "${FONT}" is not installed`)
-				return printPdf(page)
-			})
+			const pdf = await withPage(server.url + '/', printPdf)
 			verifyLayout(await pdfPages(pdf), doc)
 			const { dir, name } = parse(doc.sourcePath)
 			await writeFile(join(dir, `${name}.pdf`), pdf)

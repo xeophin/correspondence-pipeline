@@ -50,43 +50,8 @@ const { timesheet, lang } = Astro.props
 		font-weight: 500;
 	}
 
-	.hours {
-		width: 100%;
-		border-collapse: collapse;
-
-		th, td {
-			padding: 0.4em 0;
-			vertical-align: top;
-			text-align: left;
-			font-weight: 400;
-		}
-
-		.date {
-			white-space: nowrap;
-			padding-right: 2em;
-		}
-
-		.number {
-			text-align: right;
-			padding-left: 2em;
-			white-space: nowrap;
-		}
-
-		thead th {
-			border-bottom: 1px solid black;
-			color: var(--accentColor);
-		}
-
-		tbody tr {
-			break-inside: avoid;
-			border-bottom: 0.5px solid #999;
-		}
-
-		tfoot {
-			th, td {
-				font-weight: 500;
-				border-top: 1px solid black;
-			}
-		}
+	.date {
+		white-space: nowrap;
+		padding-right: 2em;
 	}
 </style>

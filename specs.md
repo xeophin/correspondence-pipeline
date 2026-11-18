@@ -69,7 +69,7 @@ type: invoice            # letter | invoice (required)
 sender: business         # business (default) | personal
 lang: de                 # de (default) | en
 date: 2026-12-11         # letter: required; invoice: defaults to Banana document date
-subject: Unterhalt kibo-physio.ch 2026/27   # required
+subject: Unterhalt kibo-physio.ch 2026/27   # letter: required; invoice: defaults to Banana document title
 recipient: |             # required for letters; for invoices defaults to Banana customer address
   Kibo Sportrehabilitation GmbH
   Hessstrasse 105
@@ -116,7 +116,7 @@ Page 1, top to bottom:
 
 Pages 2+:
 
-- **Running header** (except on the QR-bill page): brand plus document type and number (e.g. `example.org/studio · Rechnung 2026-042`), placed where the address window is on page 1.
+- **Running header** (except on the QR-bill page): brand plus subject (e.g. `example.org/studio / Unterhalt muster-ag.ch`), placed where the address window is on page 1.
 - **Footer** on every page except the QR-bill page: page `x / y`, name and address, contact, and the Markdown file name (base name only).
 
 The existing grid (aside column + main column, `--column-width`, `--gutter-width`) remains the basis.
@@ -124,9 +124,9 @@ The existing grid (aside column + main column, `--column-width`, `--gutter-width
 ## Invoice details
 
 - Line items and the total come from the Banana invoice JSON (Banana's "Invoice Json Object", version 1.0) and are printed as-is. Only `item_type: item` rows are supported; others are an error.
-- The header's second line and the running header read `Rechnung 2026-042` (type and Banana invoice number).
+- The header's second line reads `Rechnung`. Pro-forma invoices (`total_to_pay` 0) get no QR-bill.
 - **QR-bill**: generated from the invoice JSON (creditor/IBAN, amount, currency, reference, debtor) as SVG, using `swissqrbill`. The creditor IBAN comes from Banana (`supplier_info.iban_number`), the creditor address from `src/lib/sender.ts`. With a QR-IBAN (bank number 30000–31999) the bill carries a 27-digit QR reference built exactly like Banana's CH10 layout (customer number padded to 18 digits, invoice number without separators padded to 25, `0`, modulo-10-recursive check digit), so Banana can match payments; customer and invoice numbers must then be at most 7 digits. Banana's optional ISR subscriber number is not supported. With a normal IBAN there is no reference. Labels follow `lang`. It always gets **its own page** after the letter and before the attachment: no page margins, no footer or running header, with the 210 × 105 mm bill flush with the bottom edge. (Decided 2026-11-17: on a shared page the footer's bottom margin would lift the bill off the edge, and CSS paged media can't give a single page a different margin without a page break.)
-- **Timesheet attachment** (optional): starts on a new page, after the QR-bill page. Title like "Stundenrapport November 2026 · kibo-physio.ch". One row per entry: date, description, hours; total at the end. No separate billable column (hours and billable hours are the same here).
+- **Timesheet attachment** (optional): starts on a new page, after the QR-bill page. Title like "Stundenrapport November 2026 / kibo-physio.ch". One row per entry: date, description, hours; total at the end. No separate billable column (hours and billable hours are the same here).
 
 ## Language
 

@@ -128,3 +128,13 @@ test('a frontmatter recipient drops Banana\'s debtor from the QR-bill', () => {
 	const md = INVOICE.replace('invoice: ./invoice.json', 'invoice: ./invoice.json\nrecipient: |\n  Andere GmbH\n  8000 Zürich')
 	expect(loadDocument(writeDoc(docDir(), 'r.md', md)).invoice?.debtor).toBeUndefined()
 })
+
+test('an invoice without subject takes Banana\'s document title', () => {
+	const path = writeDoc(docDir(), 'r.md', INVOICE.replace('subject: Unterhalt muster-ag.ch\n', ''))
+	expect(loadDocument(path).subject).toBe('Unterhalt muster-ag.ch')
+})
+
+test('a letter needs a subject', () => {
+	const path = writeDoc(docDir(), 'b.md', LETTER_FRONTMATTER.replace(/subject: .*\n/, ''))
+	expect(() => loadDocument(path)).toThrow(/subject/)
+})

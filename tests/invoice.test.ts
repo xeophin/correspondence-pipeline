@@ -15,8 +15,8 @@ describe('German invoice with ::items', () => {
 	let p1: TextItem[]
 	beforeAll(async () => { p1 = (await renderPdf('examples/invoice/invoice.md')).pages[0] })
 
-	test('the header names the document type and number', () => {
-		expect(pageText(p1)).toContain('Rechnung 2026-042')
+	test('the header names the document type', () => {
+		expect(pageText(p1)).toContain('Rechnung')
 	})
 
 	test('the table sits between the intro and the closing', () => {
@@ -48,7 +48,7 @@ describe('German invoice with ::items', () => {
 test('an English invoice uses English labels', async () => {
 	const md = readFileSync('examples/invoice/invoice.md', 'utf8').replace('type: invoice', 'type: invoice\nlang: en')
 	const text = pageText((await renderPdf(writeDoc(docDir(), 'invoice.md', md))).pages[0])
-	expect(text).toContain('Invoice 2026-042')
+	expect(text).toContain('Invoice')
 	expect(text).toContain('Description')
 	expect(text).toContain('Total CHF')
 })

@@ -1,8 +1,9 @@
-import { readFileSync } from 'node:fs'
+import { readFileSync, writeFileSync } from 'node:fs'
+import { join } from 'node:path'
 import { beforeAll, describe, expect, test } from 'vitest'
 import { toInvoiceView } from '../src/lib/banana.ts'
 import { LetterError } from '../src/lib/errors.ts'
-import { isQrIban, mod10Recursive, qrBillSvg, qrReference, splitStreet } from '../src/lib/qr.ts'
+import { hasQrBill, isQrIban, mod10Recursive, qrBillSvg, qrReference, splitStreet } from '../src/lib/qr.ts'
 import type { TextItem } from './helpers/pdf.ts'
 import { pageText } from './helpers/pdf.ts'
 import { renderPdf } from './helpers/render.ts'
@@ -90,4 +91,21 @@ describe('QR reference (Banana CH10 formula)', () => {
 		const reference = qrReference('1001', '2026-042')
 		expect(svg).toContain(`${reference.slice(0, 2)} ${reference.slice(2, 7)}`)
 	})
+})
+
+test('a separate building number reaches the QR-bill', () => {
+	const svg = qrBillSvg({ ...view(), debtor: { ...view().debtor!, address: 'Musterstrasse', buildingNumber: '12a' } }, 'de')
+	expect(svg).toContain('Musterstrasse 12a')
+})
+
+test('a pro-forma invoice (nothing to pay) gets no QR-bill', async () => {
+	expect(hasQrBill({ ...view(), total: 0 })).toBe(false)
+	expect(hasQrBill(view())).toBe(true)
+	const dir = docDir()
+	const json = JSON.parse(readFileSync(join(dir, 'invoice.json'), 'utf8'))
+	json.billing_info.total_to_pay = '0.00'
+	writeFileSync(join(dir, 'invoice.json'), JSON.stringify(json))
+	const { pages } = await renderPdf(writeDoc(dir, 'invoice.md', readFileSync('examples/invoice/invoice.md', 'utf8')))
+	expect(pages).toHaveLength(1)
+	expect(pageText(pages[0])).not.toContain('Zahlteil')
 })

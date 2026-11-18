@@ -25,6 +25,8 @@ export interface InvoiceView {
 	customerNumber: string
 	date: string
 	currency: string
+	/** Banana's document title (`document_info.title`); the subject when the frontmatter has none. */
+	title: string
 	customerAddress: string[]
 	/** Absent when the frontmatter overrides the address. */
 	debtor?: QrAddress
@@ -73,10 +75,12 @@ export function toInvoiceView(json: unknown): InvoiceView {
 	const person = [text(customer, 'courtesy'), text(customer, 'first_name'), text(customer, 'last_name')].filter(Boolean).join(' ')
 	const business = text(customer, 'business_name')
 	const country = text(customer, 'country_code') || 'CH'
+	const street = text(customer, 'address1')
+	const buildingNumber = text(customer, 'building_number')
 	const cityLine = [text(customer, 'postal_code'), text(customer, 'city')].filter(Boolean).join(' ')
 	const customerAddress = [
 		business, person,
-		text(customer, 'address1'), text(customer, 'address2'), text(customer, 'address3'),
+		[street, buildingNumber].filter(Boolean).join(' '), text(customer, 'address2'), text(customer, 'address3'),
 		cityLine,
 		country !== 'CH' ? text(customer, 'country') || country : '',
 	].filter(Boolean)
@@ -105,10 +109,12 @@ export function toInvoiceView(json: unknown): InvoiceView {
 		customerNumber: text(customer, 'number'),
 		date,
 		currency: text(doc, 'currency') || 'CHF',
+		title: text(doc, 'title'),
 		customerAddress,
 		debtor: {
 			name: business || person,
-			address: text(customer, 'address1'),
+			address: street,
+			...buildingNumber && { buildingNumber },
 			zip: text(customer, 'postal_code'),
 			city: text(customer, 'city'),
 			country,

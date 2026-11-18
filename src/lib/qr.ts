@@ -35,6 +35,11 @@ export function qrReference(customerNumber: string, invoiceNumber: string): stri
 	return body + mod10Recursive(body)
 }
 
+/** Pro-forma invoices (nothing to pay) get no QR-bill. */
+export function hasQrBill(invoice: InvoiceView): boolean {
+	return invoice.total !== 0
+}
+
 /** QR-IBANs have a bank number (IID) from 30000 to 31999. */
 export function isQrIban(iban: string): boolean {
 	const iid = Number(iban.replace(/\s/g, '').slice(4, 9))
@@ -61,7 +66,9 @@ export function qrBillSvg(invoice: InvoiceView, lang: Lang): string {
 			...invoice.debtor && {
 				debtor: {
 					name: invoice.debtor.name,
-					...splitStreet(invoice.debtor.address),
+					...invoice.debtor.buildingNumber
+						? { address: invoice.debtor.address, buildingNumber: invoice.debtor.buildingNumber }
+						: splitStreet(invoice.debtor.address),
 					zip: invoice.debtor.zip,
 					city: invoice.debtor.city,
 					country: invoice.debtor.country,

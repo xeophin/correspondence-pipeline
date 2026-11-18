@@ -9,7 +9,7 @@ const LABELS = {
 	'totals.total': { de: 'Total', en: 'Total' },
 	'page': { de: 'Seite', en: 'Page' },
 	'page.of': { de: 'von', en: 'of' },
-	'timesheet.title': { de: 'Stundenrapport {period} · {project}', en: 'Timesheet {period} · {project}' },
+	'timesheet.title': { de: 'Stundenrapport {period} / {project}', en: 'Timesheet {period} / {project}' },
 	'timesheet.date': { de: 'Datum', en: 'Date' },
 	'timesheet.description': { de: 'Tätigkeit', en: 'Activity' },
 	'timesheet.hours': { de: 'Stunden', en: 'Hours' },

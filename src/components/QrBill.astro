@@ -8,7 +8,7 @@ interface Props {
 	lang: Lang
 }
 
-const { invoice, lang } = Astro.props
+const { invoice, lang }: Props = Astro.props
 const svg = qrBillSvg(invoice, lang)
 ---
 

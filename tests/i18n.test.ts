@@ -18,7 +18,7 @@ test('formats amounts with Swiss grouping and two decimals', () => {
 
 test('substitutes label variables', () => {
 		expect(t('en', 'type.invoice')).toBe('Invoice')
-	expect(t('de', 'timesheet.title', { period: 'November 2026', project: 'kibo' })).toBe('Stundenrapport November 2026 · kibo')
+	expect(t('de', 'timesheet.title', { period: 'November 2026', project: 'kibo' })).toBe('Stundenrapport November 2026 / kibo')
 })
 
 test('formats quantities without trailing zeros', () => {

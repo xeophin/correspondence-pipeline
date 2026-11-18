@@ -25,9 +25,9 @@ test('rejects unknown keys and malformed dates', () => {
 })
 
 test('the attachment title names the month, or the date range across months', () => {
-	expect(timesheetTitle('de', valid)).toBe('Stundenrapport November 2026 · muster-ag.ch')
+	expect(timesheetTitle('de', valid)).toBe('Stundenrapport November 2026 / muster-ag.ch')
 	expect(timesheetTitle('en', { ...valid, period: { start: '2026-10-15', end: '2026-11-30' } }))
-		.toBe('Timesheet 15 October 2026 – 30 November 2026 · muster-ag.ch')
+		.toBe('Timesheet 15 October 2026 – 30 November 2026 / muster-ag.ch')
 })
 
 test('rejects impossible entry dates', () => {

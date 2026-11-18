@@ -11,7 +11,9 @@ import PageRules from '../components/PageRules.astro'
 import type { LoadedLetter } from '../lib/letter-loader.ts'
 import { formatDate, t } from '../lib/i18n.ts'
 import { PAGE_MARGIN } from '../lib/page-css.ts'
+import { hasQrBill } from '../lib/qr.ts'
 import { SENDER } from '../lib/sender.ts'
+import '../styles/tables.css'
 
 type Props = LoadedLetter
 
@@ -29,12 +31,11 @@ if (signature) {
 }
 const brand = doc.sender === 'business' ? 'example.org/studio' : 'hanna/beispiel'
 const typeLabel = doc.type === 'invoice' ? t(doc.lang, 'type.invoice') : undefined
-const documentLabel = doc.invoice ? `${typeLabel} ${doc.invoice.number}` : doc.title
-const typeLine = doc.sender === 'business' ? documentLabel : undefined
-const runningHeader = doc.invoice ? `${brand} · ${documentLabel}` : brand
+const typeLine = doc.sender === 'business' ? typeLabel : undefined
+const runningHeader = `${brand} / ${doc.subject}`
 const footerLines = [
-	`${SENDER.name} · ${SENDER.street} · ${SENDER.zip} ${SENDER.city}`,
-	`${SENDER.email} · ${SENDER.phone}`,
+	`${SENDER.name} / ${SENDER.street} / ${SENDER.zip} ${SENDER.city}`,
+	`${SENDER.email} / ${SENDER.phone}`,
 ]
 
 // Envelope window (C5, right; mm from the page's top-left): the address goes at
@@ -84,7 +85,7 @@ const accentColor = `oklch(${lightness} ${chroma} ${hue})`
 		</MainAndSide>
 	)}
 
-	{doc.invoice && <QrBill invoice={doc.invoice} lang={doc.lang}/>}
+	{doc.invoice && hasQrBill(doc.invoice) && <QrBill invoice={doc.invoice} lang={doc.lang}/>}
 
 	{doc.timesheet && <TimesheetAttachment timesheet={doc.timesheet} lang={doc.lang}/>}
 </body>

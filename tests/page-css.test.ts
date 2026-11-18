@@ -8,13 +8,13 @@ test('cssString escapes backslashes, quotes and newlines', () => {
 
 test('pageCss puts the page counter, file name and running header into margin boxes', () => {
 	const css = pageCss({
-		runningHeader: 'example.org/studio · Rechnung 2026-042',
+		runningHeader: 'example.org/studio / Rechnung 2026-042',
 		fileName: 'a "b".md',
 		footerLines: ['Hanna Beispiel'],
 		lang: 'en',
 	})
 	expect(css).toContain('"Page " counter(page) " of " counter(pages)')
 	expect(css).toContain('"a \\"b\\".md"')
-	expect(css).toContain('"example.org/studio · Rechnung 2026-042"')
+	expect(css).toContain('"example.org/studio / Rechnung 2026-042"')
 	expect(css).toMatch(/@page\s*:first\s*{[^}]*@top-/)
 })

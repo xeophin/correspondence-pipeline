@@ -3,6 +3,7 @@ import { beforeAll, describe, expect, test } from 'vitest'
 import type { TextItem } from './helpers/pdf.ts'
 import { pageText } from './helpers/pdf.ts'
 import { renderPdf } from './helpers/render.ts'
+import { formatAmount, formatDate, formatQuantity } from '../src/lib/i18n.ts'
 import { docDir, writeDoc } from './helpers/docs.ts'
 
 const top = (page: TextItem[], text: string) => {
@@ -26,17 +27,29 @@ describe('German invoice with ::items', () => {
 
 	test('items show quantity with unit, unit price and amount; the total is Banana\'s', () => {
 		const text = pageText(p1)
-		expect(text).toContain('6.5 h')
-		expect(text).toContain('120.00')
-		expect(text).toContain('780.00')
-		expect(text).toContain("1'020.00")
+		expect(text).toContain(`${formatQuantity('de', 6.5)} h`)
+		expect(text).toContain(formatAmount('de', 120))
+		expect(text).toContain(formatAmount('de', 780))
+		expect(text).toContain(formatAmount('de', 1020))
 		expect(text).toContain('Total CHF')
 	})
 
 	test('the table uses the body font', () => {
 		const body = p1.find(i => i.str === 'Liebe Frau Muster')!
 		expect(p1.find(i => i.str.includes('Unterhalt Website'))!.font).toBe(body.font)
-		expect(p1.find(i => i.str === '780.00')!.font).toBe(body.font)
+		expect(p1.find(i => i.str === formatAmount('de', 780))!.font).toBe(body.font)
+	})
+
+	test('invoice details sit left of the address, at its height', () => {
+		const text = pageText(p1)
+		expect(text).toContain('2026-042')
+		expect(text).toContain('1001')
+		expect(text).toContain(formatDate('de', '2027-01-10'))
+		expect(text).not.toContain('LEISTUNGSZEITRAUM') // no timesheet, no frontmatter period
+		const value = p1.find(i => i.str === '2026-042')!
+		const address = p1.find(i => i.str === 'Muster AG')!
+		expect(value.rightMm).toBeLessThan(address.xMm)
+		expect(Math.abs(value.topMm - top(p1, 'Hanna Beispiel, Beispielweg'))).toBeLessThan(5)
 	})
 
 	test('there is no VAT and no subtotal', () => {

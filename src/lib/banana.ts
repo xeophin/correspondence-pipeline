@@ -24,6 +24,8 @@ export interface InvoiceView {
 	/** Banana customer account (`customer_info.number`), part of the QR reference. */
 	customerNumber: string
 	date: string
+	/** Payment due date; absent when Banana has none. */
+	dueDate?: string
 	currency: string
 	/** Banana's document title (`document_info.title`); the subject when the frontmatter has none. */
 	title: string
@@ -69,6 +71,7 @@ export function toInvoiceView(json: unknown): InvoiceView {
 	const doc = object(root, 'document_info', '')
 	const customer = object(root, 'customer_info', '')
 	const billing = object(root, 'billing_info', '')
+	const payment = root.payment_info && typeof root.payment_info === 'object' ? root.payment_info as Json : {}
 	const supplier = root.supplier_info && typeof root.supplier_info === 'object' ? root.supplier_info as Json : {}
 	if (!Array.isArray(root.items)) throw new LetterError('Banana invoice JSON: missing items')
 
@@ -108,6 +111,7 @@ export function toInvoiceView(json: unknown): InvoiceView {
 		number,
 		customerNumber: text(customer, 'number'),
 		date,
+		...isIsoDate(text(payment, 'due_date')) && { dueDate: text(payment, 'due_date') },
 		currency: text(doc, 'currency') || 'CHF',
 		title: text(doc, 'title'),
 		customerAddress,

@@ -8,8 +8,9 @@ import ItemsTable from '../components/ItemsTable.astro'
 import QrBill from '../components/QrBill.astro'
 import TimesheetAttachment from '../components/TimesheetAttachment.astro'
 import PageRules from '../components/PageRules.astro'
+import PropertyList from '../components/PropertyList.astro'
 import type { LoadedLetter } from '../lib/letter-loader.ts'
-import { formatDate, t } from '../lib/i18n.ts'
+import { formatDate, formatPeriod, t } from '../lib/i18n.ts'
 import { PAGE_MARGIN } from '../lib/page-css.ts'
 import { hasQrBill } from '../lib/qr.ts'
 import { SENDER } from '../lib/sender.ts'
@@ -38,6 +39,15 @@ const footerLines = [
 	`${SENDER.email} / ${SENDER.phone}`,
 ]
 
+// Invoice details, left of the address; rows without a value are left out.
+const invoiceProperties: [string, string][] = doc.invoice ? ([
+	[t(doc.lang, 'meta.invoiceNumber'), doc.invoice.number],
+	[t(doc.lang, 'meta.project'), doc.project],
+	[t(doc.lang, 'meta.customerNumber'), doc.invoice.customerNumber],
+	[t(doc.lang, 'meta.dueDate'), doc.invoice.dueDate && formatDate(doc.lang, doc.invoice.dueDate)],
+	[t(doc.lang, 'meta.servicePeriod'), doc.period && formatPeriod(doc.lang, doc.period.start, doc.period.end)],
+] as [string, string | undefined][]).filter((row): row is [string, string] => !!row[1]) : []
+
 // Envelope window (C5, right; mm from the page's top-left): the address goes at
 // 117–196 × 47–81, the subject below 95. Convert to the content box of page 1.
 const addressTop = 47.5 - PAGE_MARGIN.top
@@ -65,6 +75,11 @@ const accentColor = `oklch(${lightness} ${chroma} ${hue})`
 		<div class="address-position">
 			<Address recipient={doc.recipient}/>
 		</div>
+		{invoiceProperties.length > 0 && (
+			<div class="properties-position">
+				<PropertyList propertyList={invoiceProperties}/>
+			</div>
+		)}
 	</div>
 
 	<Subject date={formatDate(doc.lang, doc.date)} subject={doc.subject}/>
@@ -113,6 +128,14 @@ const accentColor = `oklch(${lightness} ${chroma} ${hue})`
 		position: absolute;
 		top: var(--address-top);
 		left: var(--address-left);
+	}
+
+	/* Same top as the address, and never reaching into its column. */
+	.properties-position {
+		position: absolute;
+		top: var(--address-top);
+		left: 0;
+		max-width: calc(var(--address-left) - var(--gutter-width));
 	}
 
 	.body {

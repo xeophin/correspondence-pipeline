@@ -1,8 +1,9 @@
 ---
-import {formatAmount, formatDate, t, type Lang} from '../lib/i18n.ts'
-import {timesheetTitle, type Timesheet} from '../lib/timesheet.ts'
+import {formatAmount, formatDate, formatPeriod, t, type Lang} from '../lib/i18n.ts'
+import type {Timesheet} from '../lib/timesheet.ts'
 import MainAndSide from './MainAndSide.astro'
 import FullWidth from './FullWidth.astro'
+import PropertyList from './PropertyList.astro'
 
 interface Props {
 	timesheet: Timesheet
@@ -10,14 +11,21 @@ interface Props {
 }
 
 const {timesheet, lang} = Astro.props
+const properties: [string, string][] = [
+	[t(lang, 'meta.project'), timesheet.project.id],
+	[t(lang, 'meta.projectName'), timesheet.project.description],
+	[t(lang, 'meta.period'), formatPeriod(lang, timesheet.period.start, timesheet.period.end)],
+]
 ---
-<MainAndSide>
-	<h2 class="aside" slot="side">Anhang</h2>
-	<h2>{timesheetTitle(lang, timesheet)}</h2>
-</MainAndSide>
+<section class="attachment">
+	<MainAndSide>
+		<h2 class="aside" slot="side">Anhang</h2>
+		<h2>{t(lang, 'timesheet.title')}</h2>
+	</MainAndSide>
 
-<FullWidth>
-	<section class="attachment">
+	<PropertyList propertyList={properties}/>
+
+	<FullWidth>
 
 		<table class="hours">
 			<thead>
@@ -43,11 +51,13 @@ const {timesheet, lang} = Astro.props
 			</tr>
 			</tfoot>
 		</table>
-	</section>
-</FullWidth>
+
+	</FullWidth>
+</section>
 
 <style>
 	.attachment {
+		break-before: auto;
 		break-inside: avoid-page;
 		display: flex;
 		flex-direction: column;
@@ -61,7 +71,6 @@ const {timesheet, lang} = Astro.props
 		&.aside {
 			font-weight: 400;
 			color: var(--accentColor);
-			break-before: auto;
 		}
 	}
 

@@ -6,7 +6,7 @@ import { toInvoiceView, type InvoiceView } from './banana.ts'
 import { isIsoDate } from './dates.ts'
 import { LetterError } from './errors.ts'
 import type { Lang } from './i18n.ts'
-import { parseTimesheet, type Timesheet } from './timesheet.ts'
+import { parseTimesheet, periodSchema, type Period, type Timesheet } from './timesheet.ts'
 import { describeIssues } from './zod-errors.ts'
 
 export interface LetterDocument {
@@ -27,6 +27,10 @@ export interface LetterDocument {
 	hasItemsMarker: boolean
 	invoice?: InvoiceView
 	timesheet?: Timesheet
+	/** Invoices: project id, from the frontmatter or the timesheet. */
+	project?: string
+	/** Invoices: when the services were rendered, from the frontmatter or the timesheet. */
+	period?: Period
 }
 
 const frontmatterSchema = z.strictObject({
@@ -38,6 +42,8 @@ const frontmatterSchema = z.strictObject({
 	recipient: z.union([z.string(), z.array(z.string())]).optional(),
 	invoice: z.string().optional(),
 	timesheet: z.string().optional(),
+	project: z.string().min(1).optional(),
+	period: periodSchema.optional(),
 	signature: z.boolean().default(false),
 	title: z.string().optional(),
 })
@@ -83,7 +89,7 @@ export function loadDocument(mdPath: string): LetterDocument {
 	const fm = parsed.data
 
 	if (fm.type === 'letter') {
-		if (fm.invoice || fm.timesheet) fail('invoice and timesheet need type: invoice')
+		if (fm.invoice || fm.timesheet || fm.project || fm.period) fail('invoice, timesheet, project and period need type: invoice')
 		if (!fm.date) fail('date is required for letters')
 		if (!fm.recipient) fail('recipient is required for letters')
 		if (!fm.subject) fail('subject is required for letters')
@@ -136,5 +142,7 @@ export function loadDocument(mdPath: string): LetterDocument {
 		hasItemsMarker: marker !== -1,
 		invoice,
 		timesheet,
+		project: fm.project ?? timesheet?.project.id,
+		period: fm.period ?? timesheet?.period,
 	}
 }

@@ -9,7 +9,14 @@ const LABELS = {
 	'totals.total': { de: 'Total', en: 'Total' },
 	'page': { de: 'Seite', en: 'Page' },
 	'page.of': { de: 'von', en: 'of' },
-	'timesheet.title': { de: 'Stundenrapport {period} / {project}', en: 'Timesheet {period} / {project}' },
+	'timesheet.title': { de: 'Stundenrapport', en: 'Timesheet' },
+	'meta.invoiceNumber': { de: 'Rechnungsnummer', en: 'Invoice number' },
+	'meta.customerNumber': { de: 'Kundennummer', en: 'Customer number' },
+	'meta.project': { de: 'Projekt', en: 'Project' },
+	'meta.projectName': { de: 'Projektname', en: 'Project name' },
+	'meta.dueDate': { de: 'Zahlbar bis', en: 'Due date' },
+	'meta.servicePeriod': { de: 'Leistungszeitraum', en: 'Service period' },
+	'meta.period': { de: 'Zeitraum', en: 'Period' },
 	'timesheet.date': { de: 'Datum', en: 'Date' },
 	'timesheet.description': { de: 'Tätigkeit', en: 'Activity' },
 	'timesheet.hours': { de: 'Stunden', en: 'Hours' },
@@ -29,14 +36,24 @@ function parseIsoDate(iso: string): Date {
 	return new Date(`${iso}T00:00:00Z`)
 }
 
-export function formatDate(lang: Lang, iso: string): string {
+function dateFormat(lang: Lang): Intl.DateTimeFormat {
 	return new Intl.DateTimeFormat(LOCALE[lang], { day: 'numeric', month: 'numeric', year: 'numeric', timeZone: 'UTC' })
-		.format(parseIsoDate(iso))
+}
+
+export function formatDate(lang: Lang, iso: string): string {
+	return dateFormat(lang).format(parseIsoDate(iso))
 }
 
 export function formatMonth(lang: Lang, iso: string): string {
 	return new Intl.DateTimeFormat(LOCALE[lang], { month: 'long', year: 'numeric', timeZone: 'UTC' })
 		.format(parseIsoDate(iso))
+}
+
+/** "November 2026" for a period within one month, otherwise a date range. */
+export function formatPeriod(lang: Lang, start: string, end: string): string {
+	return start.slice(0, 7) === end.slice(0, 7)
+		? formatMonth(lang, start)
+		: dateFormat(lang).formatRange(parseIsoDate(start), parseIsoDate(end))
 }
 
 export function formatAmount(lang: Lang, n: number): string {

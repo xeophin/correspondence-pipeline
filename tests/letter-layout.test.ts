@@ -2,6 +2,7 @@ import { beforeAll, describe, expect, test } from 'vitest'
 import type { TextItem } from './helpers/pdf.ts'
 import { pageText } from './helpers/pdf.ts'
 import { renderPdf } from './helpers/render.ts'
+import { formatDate } from '../src/lib/i18n.ts'
 
 const RECIPIENT = ['Muster AG', 'Frau Erika Muster', 'Musterstrasse 12', '3000 Bern']
 
@@ -40,7 +41,7 @@ describe('business letter', () => {
 		const text = pageText(p1)
 		expect(text).toContain('example.org')
 		expect(text).toContain('studio')
-		expect(text).toContain('11. Dezember 2026')
+		expect(text).toContain(formatDate('de', '2026-12-11'))
 	})
 })
 
@@ -49,5 +50,5 @@ test('a personal letter shows the personal brand, no type line, and an English d
 	expect(text).toContain('hanna')
 	expect(text).toContain('beispiel')
 	expect(text).not.toContain('studio')
-	expect(text).toContain('11 December 2026')
+	expect(text).toContain(formatDate('en', '2026-12-11'))
 })

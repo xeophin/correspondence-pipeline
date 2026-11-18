@@ -62,3 +62,4 @@ Claude's own session memory is not part of the repo, so durable project knowledg
 - 2026-11-18: No font check before printing: the CSS has a fallback, and a missing Unica 77 LL is the user's to notice.
 - 2026-11-18: Running header is brand / subject; `/` is the separator everywhere (header, footer, timesheet title). Invoices may omit `subject`; it falls back to Banana's `document_info.title`.
 - 2026-11-18: Pro-forma invoices (`total_to_pay` 0) get no QR-bill.
+- 2026-11-18: Invoices list invoice number, project, customer number, due date and service period left of the address (`PropertyList`); rows without a value are left out. Banana's invoice JSON has no project or period, so they come from the frontmatter or, failing that, the timesheet. Due date is `payment_info.due_date`. The timesheet title is just "Stundenrapport"; project id, name and period sit in a `PropertyList` below it.

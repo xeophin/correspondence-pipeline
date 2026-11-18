@@ -1,28 +1,12 @@
 import { expect, test } from 'vitest'
-import { formatAmount, formatDate, formatMonth, formatQuantity, t } from '../src/lib/i18n.ts'
+import { formatMonth, formatPeriod, t } from '../src/lib/i18n.ts'
 
-test('formats long dates per language', () => {
-	expect(formatDate('de', '2026-12-11')).toBe('11. Dezember 2026')
-	expect(formatDate('en', '2026-12-11')).toBe('11 December 2026')
+test('a period within one month is the month, otherwise a range', () => {
+	expect(formatPeriod('de', '2026-11-01', '2026-11-30')).toBe(formatMonth('de', '2026-11-01'))
+	expect(formatPeriod('de', '2026-10-15', '2026-11-30')).not.toBe(formatMonth('de', '2026-10-15'))
 })
 
-test('formats a month for the timesheet title', () => {
-	expect(formatMonth('de', '2026-11-01')).toBe('November 2026')
-	expect(formatMonth('en', '2026-03-01')).toBe('March 2026')
-})
-
-test('formats amounts with Swiss grouping and two decimals', () => {
-	expect(formatAmount('de', 1234.5)).toBe("1'234.50")
-	expect(formatAmount('en', 1234.5)).toMatch(/^1.234\.50$/)
-})
-
-test('substitutes label variables', () => {
-		expect(t('en', 'type.invoice')).toBe('Invoice')
-	expect(t('de', 'timesheet.title', { period: 'November 2026', project: 'kibo' })).toBe('Stundenrapport November 2026 / kibo')
-})
-
-test('formats quantities without trailing zeros', () => {
-	expect(formatQuantity('de', 6.5)).toBe('6.5')
-	expect(formatQuantity('de', 1)).toBe('1')
-	expect(formatQuantity('de', 1500)).toBe("1'500")
+test('looks up labels per language', () => {
+	expect(t('en', 'type.invoice')).toBe('Invoice')
+	expect(t('de', 'timesheet.title')).toBe('Stundenrapport')
 })

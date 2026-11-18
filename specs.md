@@ -76,6 +76,8 @@ recipient: |             # required for letters; for invoices defaults to Banana
   3000 Köniz / Liebefeld
 invoice: ./2026-042.json        # invoice: required. Path relative to the .md file
 timesheet: ./2026-11-hours.json # invoice only, optional
+project: KIBO            # invoice only, optional; defaults to the timesheet's project id
+period: { start: 2026-11-01, end: 2026-11-30 }  # invoice only, optional service period; defaults to the timesheet's period
 signature: false         # optional, default false
 title: Bewerbung         # optional header line 2 for letters
 ```

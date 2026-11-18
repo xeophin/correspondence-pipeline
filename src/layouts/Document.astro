@@ -42,6 +42,12 @@ const footerLines = [
 const addressTop = 47.5 - PAGE_MARGIN.top
 const addressLeft = 117 - PAGE_MARGIN.left
 const firstPageHeadHeight = 97 - PAGE_MARGIN.top
+
+// Random Accent Color
+const hue = Math.random() * 360;
+const chroma = Math.random() * 0.2 + 0.2;
+const lightness = Math.random() * 0.333 + 0.333
+const accentColor = `oklch(${lightness} ${chroma} ${hue})`
 ---
 
 <!doctype html>
@@ -125,7 +131,7 @@ const firstPageHeadHeight = 97 - PAGE_MARGIN.top
 	}
 </style>
 
-<style is:global>
+<style is:global define:vars={{accentColor}}>
 	h1, h2, h3 {
 		font-size: inherit;
 		margin: 0;

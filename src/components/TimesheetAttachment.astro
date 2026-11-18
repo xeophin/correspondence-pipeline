@@ -1,46 +1,54 @@
 ---
-import { formatAmount, formatDate, t, type Lang } from '../lib/i18n.ts'
-import { timesheetTitle, type Timesheet } from '../lib/timesheet.ts'
+import {formatAmount, formatDate, t, type Lang} from '../lib/i18n.ts'
+import {timesheetTitle, type Timesheet} from '../lib/timesheet.ts'
+import MainAndSide from './MainAndSide.astro'
+import FullWidth from './FullWidth.astro'
 
 interface Props {
 	timesheet: Timesheet
 	lang: Lang
 }
 
-const { timesheet, lang } = Astro.props
+const {timesheet, lang} = Astro.props
 ---
-
-<section class="attachment">
+<MainAndSide>
+	<h2 class="aside" slot="side">Anhang</h2>
 	<h2>{timesheetTitle(lang, timesheet)}</h2>
-	<table class="hours">
-		<thead>
+</MainAndSide>
+
+<FullWidth>
+	<section class="attachment">
+
+		<table class="hours">
+			<thead>
 			<tr>
 				<th class="date">{t(lang, 'timesheet.date')}</th>
 				<th>{t(lang, 'timesheet.description')}</th>
 				<th class="number">{t(lang, 'timesheet.hours')}</th>
 			</tr>
-		</thead>
-		<tbody>
+			</thead>
+			<tbody>
 			{timesheet.entries.map(entry => (
-				<tr>
-					<td class="date">{formatDate(lang, entry.date)}</td>
-					<td>{entry.notes}</td>
-					<td class="number">{formatAmount(lang, entry.hours)}</td>
-				</tr>
+							<tr>
+								<td class="date">{formatDate(lang, entry.date)}</td>
+								<td>{entry.notes}</td>
+								<td class="number">{formatAmount(lang, entry.hours)}</td>
+							</tr>
 			))}
-		</tbody>
-		<tfoot>
+			</tbody>
+			<tfoot>
 			<tr>
 				<th colspan="2">{t(lang, 'timesheet.total')}</th>
 				<td class="number">{formatAmount(lang, timesheet.total)}</td>
 			</tr>
-		</tfoot>
-	</table>
-</section>
+			</tfoot>
+		</table>
+	</section>
+</FullWidth>
 
 <style>
 	.attachment {
-		break-before: page;
+		break-inside: avoid-page;
 		display: flex;
 		flex-direction: column;
 		gap: 1rlh;
@@ -48,6 +56,13 @@ const { timesheet, lang } = Astro.props
 
 	h2 {
 		font-weight: 500;
+		break-after: avoid;
+
+		&.aside {
+			font-weight: 400;
+			color: var(--accentColor);
+			break-before: auto;
+		}
 	}
 
 	.date {

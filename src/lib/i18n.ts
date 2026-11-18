@@ -30,7 +30,7 @@ function parseIsoDate(iso: string): Date {
 }
 
 export function formatDate(lang: Lang, iso: string): string {
-	return new Intl.DateTimeFormat(LOCALE[lang], { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
+	return new Intl.DateTimeFormat(LOCALE[lang], { day: 'numeric', month: 'numeric', year: 'numeric', timeZone: 'UTC' })
 		.format(parseIsoDate(iso))
 }
 

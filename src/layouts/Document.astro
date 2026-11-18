@@ -181,4 +181,27 @@ const accentColor = `oklch(${lightness} ${chroma} ${hue})`
 	.trim-line {
 		text-box: trim-end cap alphabetic;
 	}
+
+	/* The dash hangs into the left margin. Items keep their leading (MainAndSide
+	   trims only the list's outer edges), plus a little to set them apart. */
+	ul {
+		margin: 0;
+		margin-inline-start: 1.25ch;
+		padding: 0;
+		list-style: "—" outside;
+	}
+
+	li {
+		padding-inline-start: 0.5ch;
+		text-wrap: pretty;
+
+		&::marker {
+			color: var(--accentColor);
+			font-weight: 600;
+		}
+
+		& + li, > ul, > p + p {
+			margin-block-start: calc(1lh - 1cap);
+		}
+	}
 </style>

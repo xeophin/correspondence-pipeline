@@ -36,6 +36,7 @@ pnpm and fnm's Node are not readable inside Claude Code's sandbox; pnpm commands
 - `src/lib/` — plain TS run by Node directly (erasable syntax only, `.ts` import extensions): document model and validation, Banana mapping, i18n, page CSS, QR-bill, signature, user config (`~/.config/letter/config.json` or `$LETTER_CONFIG`: sender, header brands, signature)
 - `src/cli/` — the `letter` command: build (Astro into `.astro/builds/`, cwd = repo, because Astro's prerender step must sit inside cwd), serve, print, verify layout against the envelope window
 - `src/layouts/Document.astro`, `src/components/` — the templates; `src/styles/tables.css` styles every table (items, timesheet, Markdown body)
+- `.github/dependabot.yml` — weekly npm updates, grouped into one PR for production and one for development dependencies
 - `banana/` — Banana Accounting extensions that export invoice and timesheet JSON
 - `examples/` — fictional documents for tests and preview. The repo must hold no real personal or client data: the sender lives in the user config, everything else is fictional (Hanna Beispiel, Muster AG)
 

@@ -12,11 +12,23 @@ test('maps the Banana invoice JSON', () => {
 	expect(view.date).toBe('2026-12-11')
 	expect(view.currency).toBe('CHF')
 	expect(view.items).toHaveLength(2)
-	expect(view.items[0]).toEqual({ description: 'Unterhalt Website November 2026', quantity: 6.5, unit: 'h', unitPrice: 120, amount: 780 })
+	expect(view.items[0]).toEqual({
+		description: 'Unterhalt Website November 2026',
+		quantity: 6.5,
+		unit: 'h',
+		unitPrice: 120,
+		amount: 780,
+	})
 	expect(view.total).toBe(1020)
 	expect(view.creditorIban).toBe('CH93 0076 2011 6238 5295 7')
 	expect(view.customerAddress).toEqual(['Muster AG', 'Erika Muster', 'Musterstrasse 12', '3000 Bern'])
-	expect(view.debtor).toEqual({ name: 'Muster AG', address: 'Musterstrasse 12', zip: '3000', city: 'Bern', country: 'CH' })
+	expect(view.debtor).toEqual({
+		name: 'Muster AG',
+		address: 'Musterstrasse 12',
+		zip: '3000',
+		city: 'Bern',
+		country: 'CH',
+	})
 })
 
 test('adds the country line for foreign customers', () => {

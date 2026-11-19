@@ -1,0 +1,22 @@
+{
+	"$schema": "./node_modules/oxfmt/configuration_schema.json",
+	"useTabs": true,
+	"semi": false,
+	"singleQuote": true,
+	"arrowParens": "avoid",
+	"printWidth": 120,
+	"ignorePatterns": [
+		"examples/**",
+		"tests/fixtures/**",
+		"docs/**",
+		"specs.md",
+		"pnpm-lock.yaml",
+		".astro/**",
+		"dist/**",
+		".claude/**",
+		".idea/**",
+		".superpowers/**",
+		".vscode/**"
+	],
+	"overrides": []
+}

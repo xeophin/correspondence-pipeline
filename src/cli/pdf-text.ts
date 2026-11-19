@@ -40,5 +40,3 @@ export async function pdfPages(pdf: Uint8Array): Promise<TextItem[][]> {
 }
 
 export const pageText = (items: TextItem[]): string => items.map(i => i.str).join(' ')
-
-

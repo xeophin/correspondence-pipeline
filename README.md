@@ -23,19 +23,19 @@ letter ~/Correspondence/2026/muster/2026-12-11-rechnung.md
 ### Frontmatter
 
 ```yaml
-type: invoice            # letter | invoice (required)
-sender: business         # business (default) | personal
-lang: de                 # de (default) | en
-date: 2026-12-11         # letters: required; invoices: Banana's date
-subject: Unterhalt muster-ag.ch            # required
-recipient: |             # letters: required; invoices: Banana's customer address
+type: invoice # letter | invoice (required)
+sender: business # business (default) | personal
+lang: de # de (default) | en
+date: 2026-12-11 # letters: required; invoices: Banana's date
+subject: Unterhalt muster-ag.ch # required
+recipient: | # letters: required; invoices: Banana's customer address
   Muster AG
   Musterstrasse 12
   3000 Bern
-invoice: ./2026-042.json        # invoices: Banana invoice JSON, relative to this file
+invoice: ./2026-042.json # invoices: Banana invoice JSON, relative to this file
 timesheet: ./MUSTER-2026-11.json # optional attachment
-signature: false         # true: signature image from the user config
-title: Bewerbung         # optional second header line for business letters
+signature: false # true: signature image from the user config
+title: Bewerbung # optional second header line for business letters
 ```
 
 In an invoice, a line `::items` places the items table; without it the table follows the text.
@@ -46,17 +46,17 @@ In an invoice, a line `::items` places the items table; without it the table fol
 
 ```json
 {
-  "sender": {
-    "name": "Hanna Beispiel",
-    "street": "Beispielweg 1",
-    "zip": "8000",
-    "city": "Zürich",
-    "country": "CH",
-    "email": "hanna@example.org",
-    "phone": "+41 44 000 00 00"
-  },
-  "brands": { "business": "example.org/studio", "personal": "hanna/beispiel" },
-  "signature": "signature.png"
+	"sender": {
+		"name": "Hanna Beispiel",
+		"street": "Beispielweg 1",
+		"zip": "8000",
+		"city": "Zürich",
+		"country": "CH",
+		"email": "hanna@example.org",
+		"phone": "+41 44 000 00 00"
+	},
+	"brands": { "business": "example.org/studio", "personal": "hanna/beispiel" },
+	"signature": "signature.png"
 }
 ```
 

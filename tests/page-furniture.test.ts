@@ -4,7 +4,9 @@ import { pageText } from './helpers/pdf.ts'
 import { renderPdf } from './helpers/render.ts'
 
 let pages: TextItem[][]
-beforeAll(async () => { pages = (await renderPdf('examples/long-letter.md')).pages })
+beforeAll(async () => {
+	pages = (await renderPdf('examples/long-letter.md')).pages
+})
 
 test('a long letter runs onto two pages', () => {
 	expect(pages).toHaveLength(2)

@@ -8,7 +8,9 @@ const RECIPIENT = ['Muster AG', 'Frau Erika Muster', 'Musterstrasse 12', '3000 B
 
 describe('business letter', () => {
 	let p1: TextItem[]
-	beforeAll(async () => { p1 = (await renderPdf('examples/letter.md')).pages[0] })
+	beforeAll(async () => {
+		p1 = (await renderPdf('examples/letter.md')).pages[0]
+	})
 
 	test('every recipient line sits inside the always-visible window zone', () => {
 		for (const line of RECIPIENT) {

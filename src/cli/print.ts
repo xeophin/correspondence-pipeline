@@ -16,4 +16,3 @@ export async function withPage<T>(url: string, fn: (page: Page) => Promise<T>): 
 export async function printPdf(page: Page): Promise<Uint8Array> {
 	return page.pdf({ preferCSSPageSize: true, printBackground: true })
 }
-

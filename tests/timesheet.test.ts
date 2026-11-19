@@ -25,5 +25,7 @@ test('rejects unknown keys and malformed dates', () => {
 })
 
 test('rejects impossible entry dates', () => {
-	expect(() => parseTimesheet({ ...valid, entries: [{ ...valid.entries[0], date: '2026-11-31' }], total: 1.5 })).toThrow(/date/)
+	expect(() =>
+		parseTimesheet({ ...valid, entries: [{ ...valid.entries[0], date: '2026-11-31' }], total: 1.5 }),
+	).toThrow(/date/)
 })

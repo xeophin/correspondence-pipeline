@@ -67,7 +67,9 @@ function lines(value: string | string[]): string[] {
 export function loadDocument(mdPath: string): LetterDocument {
 	const sourcePath = resolve(mdPath)
 	const fileName = basename(sourcePath)
-	const fail = (message: string): never => { throw new LetterError(`${fileName}: ${message}`) }
+	const fail = (message: string): never => {
+		throw new LetterError(`${fileName}: ${message}`)
+	}
 
 	let source: string
 	try {
@@ -89,7 +91,8 @@ export function loadDocument(mdPath: string): LetterDocument {
 	const fm = parsed.data
 
 	if (fm.type === 'letter') {
-		if (fm.invoice || fm.timesheet || fm.project || fm.period) fail('invoice, timesheet, project and period need type: invoice')
+		if (fm.invoice || fm.timesheet || fm.project || fm.period)
+			fail('invoice, timesheet, project and period need type: invoice')
 		if (!fm.date) fail('date is required for letters')
 		if (!fm.recipient) fail('recipient is required for letters')
 		if (!fm.subject) fail('subject is required for letters')

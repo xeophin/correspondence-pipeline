@@ -7,7 +7,7 @@ const LABELS = {
 	'items.unitPrice': { de: 'Preis', en: 'Price' },
 	'items.amount': { de: 'Betrag', en: 'Amount' },
 	'totals.total': { de: 'Total', en: 'Total' },
-	'page': { de: 'Seite', en: 'Page' },
+	page: { de: 'Seite', en: 'Page' },
 	'page.of': { de: 'von', en: 'of' },
 	'timesheet.title': { de: 'Stundenrapport', en: 'Timesheet' },
 	'meta.invoiceNumber': { de: 'Rechnungsnummer', en: 'Invoice number' },
@@ -45,8 +45,9 @@ export function formatDate(lang: Lang, iso: string): string {
 }
 
 export function formatMonth(lang: Lang, iso: string): string {
-	return new Intl.DateTimeFormat(LOCALE[lang], { month: 'long', year: 'numeric', timeZone: 'UTC' })
-		.format(parseIsoDate(iso))
+	return new Intl.DateTimeFormat(LOCALE[lang], { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(
+		parseIsoDate(iso),
+	)
 }
 
 /** "November 2026" for a period within one month, otherwise a date range. */

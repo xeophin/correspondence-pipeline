@@ -44,7 +44,10 @@ function exec() {
 		if (projects.indexOf(entry.projectId) === -1) projects.push(entry.projectId)
 	}
 	if (!projects.length) {
-		Banana.Ui.showInformation('Export timesheet', 'No rows with a project found. Columns read: ' + JSON.stringify(COLUMNS))
+		Banana.Ui.showInformation(
+			'Export timesheet',
+			'No rows with a project found. Columns read: ' + JSON.stringify(COLUMNS),
+		)
 		return '@Cancel'
 	}
 
@@ -55,7 +58,11 @@ function exec() {
 	if (!period) return '@Cancel'
 
 	var timesheet = buildTimesheet(rows, { projectId: projectId, start: period.startDate, end: period.endDate })
-	var fileName = Banana.IO.getSaveFileName('Save timesheet JSON', projectId + '-' + period.startDate.slice(0, 7) + '.json', 'JSON (*.json)')
+	var fileName = Banana.IO.getSaveFileName(
+		'Save timesheet JSON',
+		projectId + '-' + period.startDate.slice(0, 7) + '.json',
+		'JSON (*.json)',
+	)
 	if (!fileName.length) return '@Cancel'
 	var file = Banana.IO.getLocalFile(fileName)
 	file.write(JSON.stringify(timesheet, null, 2))

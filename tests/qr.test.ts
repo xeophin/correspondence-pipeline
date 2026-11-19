@@ -30,7 +30,9 @@ test('a missing IBAN is a LetterError naming the Banana field', () => {
 
 describe('invoice PDF', () => {
 	let pages: TextItem[][]
-	beforeAll(async () => { pages = (await renderPdf('examples/invoice/invoice.md')).pages })
+	beforeAll(async () => {
+		pages = (await renderPdf('examples/invoice/invoice.md')).pages
+	})
 
 	test('the QR-bill gets its own last page, flush with the bottom, without footer', () => {
 		expect(pages).toHaveLength(2)
@@ -94,7 +96,10 @@ describe('QR reference (Banana CH10 formula)', () => {
 })
 
 test('a separate building number reaches the QR-bill', () => {
-	const svg = qrBillSvg({ ...view(), debtor: { ...view().debtor!, address: 'Musterstrasse', buildingNumber: '12a' } }, 'de')
+	const svg = qrBillSvg(
+		{ ...view(), debtor: { ...view().debtor!, address: 'Musterstrasse', buildingNumber: '12a' } },
+		'de',
+	)
 	expect(svg).toContain('Musterstrasse 12a')
 })
 

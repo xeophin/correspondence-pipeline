@@ -23,6 +23,7 @@ Package manager is pnpm (Node >= 22.23.4). Astro 7.
 - `pnpm build` — static build to `dist/`
 - `pnpm preview` — serve the build
 - `pnpm astro check` — type check (only works once `@astrojs/check` and `typescript` are installed; not currently a dependency)
+- `pnpm lint` — oxlint (config: `.oxlintrc.json`); `pnpm format` / `pnpm format:check` — oxfmt (config: `.oxfmtrc.json`: tabs, no semicolons, single quotes, print width 120). Examples, fixtures and docs are not formatted.
 - `pnpm test` — Vitest. Most tests build a real PDF and check text positions in mm (`src/cli/pdf-text.ts`); they need Unica 77 LL installed.
 - `pnpm exec playwright install chromium` — once, after install
 - `node src/cli/letter.ts <file.md>` — the CLI. Global install: `pnpm setup` (adds pnpm's bin dir to PATH), then `pnpm add -g link:$PWD`, then `letter <file.md>`

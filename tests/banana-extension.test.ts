@@ -7,8 +7,14 @@ const { buildTimesheet, parseHours } = core as {
 	parseHours: (value: string) => number
 }
 
-const row = (date: string, projectId: string, notes: string, time: string) =>
-	({ date, projectId, projectDescription: projectId === 'MUSTER' ? 'muster-ag.ch' : 'Other', resourceId: 'KM', notes, time })
+const row = (date: string, projectId: string, notes: string, time: string) => ({
+	date,
+	projectId,
+	projectDescription: projectId === 'MUSTER' ? 'muster-ag.ch' : 'Other',
+	resourceId: 'KM',
+	notes,
+	time,
+})
 
 const rows = [
 	row('2026-11-10', 'MUSTER', 'Formular', '2:00'),

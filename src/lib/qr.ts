@@ -29,7 +29,9 @@ export function qrReference(customerNumber: string, invoiceNumber: string): stri
 		throw new LetterError(`QR reference: the Banana customer number must be 1–7 digits (is "${customerNumber}")`)
 	}
 	if (!/^\d{1,7}$/.test(invoice)) {
-		throw new LetterError(`QR reference: the invoice number must be at most 7 digits without separators (is "${invoiceNumber}")`)
+		throw new LetterError(
+			`QR reference: the invoice number must be at most 7 digits without separators (is "${invoiceNumber}")`,
+		)
 	}
 	const body = customerNumber.padStart(18, '0') + invoice.padStart(7, '0') + '0'
 	return body + mod10Recursive(body)
@@ -49,35 +51,40 @@ export function isQrIban(iban: string): boolean {
 /** The Swiss QR-bill payment part (210 × 105 mm) as SVG. Throws LetterError on invalid data. */
 export function qrBillSvg(invoice: InvoiceView, lang: Lang): string {
 	if (!invoice.creditorIban) {
-		throw new LetterError('QR-bill: the Banana invoice JSON has no supplier_info.iban_number (set the IBAN in Banana\'s file properties)')
+		throw new LetterError(
+			"QR-bill: the Banana invoice JSON has no supplier_info.iban_number (set the IBAN in Banana's file properties)",
+		)
 	}
 	const { sender } = loadUserConfig()
 	try {
-		return new SwissQRBill({
-			amount: invoice.total,
-			currency: invoice.currency as 'CHF' | 'EUR',
-			creditor: {
-				account: invoice.creditorIban,
-				name: sender.name,
-				...splitStreet(sender.street),
-				zip: sender.zip,
-				city: sender.city,
-				country: sender.country,
-			},
-			...invoice.debtor && {
-				debtor: {
-					name: invoice.debtor.name,
-					...invoice.debtor.buildingNumber
-						? { address: invoice.debtor.address, buildingNumber: invoice.debtor.buildingNumber }
-						: splitStreet(invoice.debtor.address),
-					zip: invoice.debtor.zip,
-					city: invoice.debtor.city,
-					country: invoice.debtor.country,
+		return new SwissQRBill(
+			{
+				amount: invoice.total,
+				currency: invoice.currency as 'CHF' | 'EUR',
+				creditor: {
+					account: invoice.creditorIban,
+					name: sender.name,
+					...splitStreet(sender.street),
+					zip: sender.zip,
+					city: sender.city,
+					country: sender.country,
 				},
+				...(invoice.debtor && {
+					debtor: {
+						name: invoice.debtor.name,
+						...(invoice.debtor.buildingNumber
+							? { address: invoice.debtor.address, buildingNumber: invoice.debtor.buildingNumber }
+							: splitStreet(invoice.debtor.address)),
+						zip: invoice.debtor.zip,
+						city: invoice.debtor.city,
+						country: invoice.debtor.country,
+					},
+				}),
+				message: `${t(lang, 'type.invoice')} ${invoice.number}`,
+				...(isQrIban(invoice.creditorIban) && { reference: qrReference(invoice.customerNumber, invoice.number) }),
 			},
-			message: `${t(lang, 'type.invoice')} ${invoice.number}`,
-			...isQrIban(invoice.creditorIban) && { reference: qrReference(invoice.customerNumber, invoice.number) },
-		}, { language: lang === 'de' ? 'DE' : 'EN' }).toString()
+			{ language: lang === 'de' ? 'DE' : 'EN' },
+		).toString()
 	} catch (error) {
 		throw new LetterError(`QR-bill: ${(error as Error).message}`)
 	}

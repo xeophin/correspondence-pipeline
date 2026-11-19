@@ -30,7 +30,9 @@ function buildTimesheet(rows, opts) {
 		if (hours === 0) continue
 		entries.push({ date: row.date, resource: row.resourceId, notes: row.notes, hours: hours })
 	}
-	entries.sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : 0 })
+	entries.sort(function (a, b) {
+		return a.date < b.date ? -1 : a.date > b.date ? 1 : 0
+	})
 	var total = 0
 	for (var j = 0; j < entries.length; j++) total += entries[j].hours
 	return {

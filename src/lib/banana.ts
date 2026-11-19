@@ -53,7 +53,8 @@ function text(json: Json, key: string): string {
 function amount(json: Json, key: string, path: string): number {
 	const raw = json[key]
 	const value = typeof raw === 'string' && raw.trim() !== '' ? Number(raw) : NaN
-	if (Number.isNaN(value)) throw new LetterError(`Banana invoice JSON: ${path}${key} is not a number (${JSON.stringify(raw)})`)
+	if (Number.isNaN(value))
+		throw new LetterError(`Banana invoice JSON: ${path}${key} is not a number (${JSON.stringify(raw)})`)
 	return value
 }
 
@@ -71,19 +72,24 @@ export function toInvoiceView(json: unknown): InvoiceView {
 	const doc = object(root, 'document_info', '')
 	const customer = object(root, 'customer_info', '')
 	const billing = object(root, 'billing_info', '')
-	const payment = root.payment_info && typeof root.payment_info === 'object' ? root.payment_info as Json : {}
-	const supplier = root.supplier_info && typeof root.supplier_info === 'object' ? root.supplier_info as Json : {}
+	const payment = root.payment_info && typeof root.payment_info === 'object' ? (root.payment_info as Json) : {}
+	const supplier = root.supplier_info && typeof root.supplier_info === 'object' ? (root.supplier_info as Json) : {}
 	if (!Array.isArray(root.items)) throw new LetterError('Banana invoice JSON: missing items')
 
-	const person = [text(customer, 'courtesy'), text(customer, 'first_name'), text(customer, 'last_name')].filter(Boolean).join(' ')
+	const person = [text(customer, 'courtesy'), text(customer, 'first_name'), text(customer, 'last_name')]
+		.filter(Boolean)
+		.join(' ')
 	const business = text(customer, 'business_name')
 	const country = text(customer, 'country_code') || 'CH'
 	const street = text(customer, 'address1')
 	const buildingNumber = text(customer, 'building_number')
 	const cityLine = [text(customer, 'postal_code'), text(customer, 'city')].filter(Boolean).join(' ')
 	const customerAddress = [
-		business, person,
-		[street, buildingNumber].filter(Boolean).join(' '), text(customer, 'address2'), text(customer, 'address3'),
+		business,
+		person,
+		[street, buildingNumber].filter(Boolean).join(' '),
+		text(customer, 'address2'),
+		text(customer, 'address3'),
 		cityLine,
 		country !== 'CH' ? text(customer, 'country') || country : '',
 	].filter(Boolean)
@@ -92,7 +98,7 @@ export function toInvoiceView(json: unknown): InvoiceView {
 		const path = `items[${i}].`
 		const type = text(item, 'item_type')
 		if (type !== 'item') throw new LetterError(`Banana invoice JSON: ${path}item_type "${type}" is not supported`)
-		const unitPrice = item.unit_price && typeof item.unit_price === 'object' ? item.unit_price as Json : {}
+		const unitPrice = item.unit_price && typeof item.unit_price === 'object' ? (item.unit_price as Json) : {}
 		return {
 			description: text(item, 'description'),
 			quantity: optionalAmount(item, 'quantity'),
@@ -105,20 +111,21 @@ export function toInvoiceView(json: unknown): InvoiceView {
 	const number = text(doc, 'number')
 	const date = text(doc, 'date')
 	if (!number) throw new LetterError('Banana invoice JSON: missing document_info.number')
-	if (!isIsoDate(date)) throw new LetterError(`Banana invoice JSON: document_info.date is not a date (${JSON.stringify(date)})`)
+	if (!isIsoDate(date))
+		throw new LetterError(`Banana invoice JSON: document_info.date is not a date (${JSON.stringify(date)})`)
 
 	return {
 		number,
 		customerNumber: text(customer, 'number'),
 		date,
-		...isIsoDate(text(payment, 'due_date')) && { dueDate: text(payment, 'due_date') },
+		...(isIsoDate(text(payment, 'due_date')) && { dueDate: text(payment, 'due_date') }),
 		currency: text(doc, 'currency') || 'CHF',
 		title: text(doc, 'title'),
 		customerAddress,
 		debtor: {
 			name: business || person,
 			address: street,
-			...buildingNumber && { buildingNumber },
+			...(buildingNumber && { buildingNumber }),
 			zip: text(customer, 'postal_code'),
 			city: text(customer, 'city'),
 			country,

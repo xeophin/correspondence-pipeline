@@ -14,7 +14,9 @@ const top = (page: TextItem[], text: string) => {
 
 describe('German invoice with ::items', () => {
 	let p1: TextItem[]
-	beforeAll(async () => { p1 = (await renderPdf('examples/invoice/invoice.md')).pages[0] })
+	beforeAll(async () => {
+		p1 = (await renderPdf('examples/invoice/invoice.md')).pages[0]
+	})
 
 	test('the header names the document type', () => {
 		expect(pageText(p1)).toContain('Rechnung')
@@ -25,7 +27,7 @@ describe('German invoice with ::items', () => {
 		expect(top(p1, 'Unterhalt Website')).toBeLessThan(top(p1, 'Zahlbar innert 30 Tagen'))
 	})
 
-	test('items show quantity with unit, unit price and amount; the total is Banana\'s', () => {
+	test("items show quantity with unit, unit price and amount; the total is Banana's", () => {
 		const text = pageText(p1)
 		expect(text).toContain(`${formatQuantity('de', 6.5)} h`)
 		expect(text).toContain(formatAmount('de', 120))

@@ -25,9 +25,17 @@ test('loads a letter', () => {
 	const path = writeDoc(docDir(), 'brief.md', `${LETTER_FRONTMATTER}Guten Tag\n\nGrüsse\n`)
 	const doc = loadDocument(path)
 	expect(doc).toMatchObject({
-		sourcePath: path, fileName: 'brief.md', type: 'letter', sender: 'business', lang: 'de',
-		date: '2026-12-11', subject: 'Testbrief', recipient: ['Muster AG', 'Musterstrasse 12', '3000 Bern'],
-		signature: false, hasItemsMarker: false, bodyAfter: '',
+		sourcePath: path,
+		fileName: 'brief.md',
+		type: 'letter',
+		sender: 'business',
+		lang: 'de',
+		date: '2026-12-11',
+		subject: 'Testbrief',
+		recipient: ['Muster AG', 'Musterstrasse 12', '3000 Bern'],
+		signature: false,
+		hasItemsMarker: false,
+		bodyAfter: '',
 	})
 	expect(doc.bodyBefore.trim()).toBe('Guten Tag\n\nGrüsse')
 })
@@ -48,7 +56,10 @@ test('splits the body at ::items and takes date and recipient from Banana', () =
 })
 
 test('frontmatter recipient wins over Banana address', () => {
-	const md = INVOICE.replace('invoice: ./invoice.json', 'invoice: ./invoice.json\nrecipient: |\n  Andere GmbH\n  8000 Zürich')
+	const md = INVOICE.replace(
+		'invoice: ./invoice.json',
+		'invoice: ./invoice.json\nrecipient: |\n  Andere GmbH\n  8000 Zürich',
+	)
 	expect(loadDocument(writeDoc(docDir(), 'r.md', md)).recipient).toEqual(['Andere GmbH', '8000 Zürich'])
 })
 
@@ -80,7 +91,11 @@ test('a letter needs date and recipient', () => {
 })
 
 test('a letter cannot carry invoice or timesheet data', () => {
-	const path = writeDoc(docDir(), 'b.md', LETTER_FRONTMATTER.replace('type: letter', 'type: letter\ninvoice: ./invoice.json'))
+	const path = writeDoc(
+		docDir(),
+		'b.md',
+		LETTER_FRONTMATTER.replace('type: letter', 'type: letter\ninvoice: ./invoice.json'),
+	)
 	expect(() => loadDocument(path)).toThrow(/invoice/)
 })
 
@@ -96,11 +111,22 @@ test('a file without frontmatter is an error', () => {
 
 test('loads a timesheet referenced by an invoice', () => {
 	const dir = docDir()
-	writeFileSync(join(dir, 'hours.json'), JSON.stringify({
-		project: { id: 'M', description: 'muster-ag.ch' }, period: { start: '2026-11-01', end: '2026-11-30' },
-		entries: [{ date: '2026-11-04', resource: 'KM', notes: 'Updates', hours: 1.5 }], total: 1.5,
-	}))
-	const doc = loadDocument(writeDoc(dir, 'r.md', INVOICE.replace('invoice: ./invoice.json', 'invoice: ./invoice.json\ntimesheet: ./hours.json')))
+	writeFileSync(
+		join(dir, 'hours.json'),
+		JSON.stringify({
+			project: { id: 'M', description: 'muster-ag.ch' },
+			period: { start: '2026-11-01', end: '2026-11-30' },
+			entries: [{ date: '2026-11-04', resource: 'KM', notes: 'Updates', hours: 1.5 }],
+			total: 1.5,
+		}),
+	)
+	const doc = loadDocument(
+		writeDoc(
+			dir,
+			'r.md',
+			INVOICE.replace('invoice: ./invoice.json', 'invoice: ./invoice.json\ntimesheet: ./hours.json'),
+		),
+	)
 	expect(doc.timesheet?.total).toBe(1.5)
 })
 
@@ -124,12 +150,15 @@ test('rejects an invoice whose Banana customer has no address', () => {
 	expect(() => loadDocument(writeDoc(dir, 'r.md', INVOICE))).toThrow(/recipient/)
 })
 
-test('a frontmatter recipient drops Banana\'s debtor from the QR-bill', () => {
-	const md = INVOICE.replace('invoice: ./invoice.json', 'invoice: ./invoice.json\nrecipient: |\n  Andere GmbH\n  8000 Zürich')
+test("a frontmatter recipient drops Banana's debtor from the QR-bill", () => {
+	const md = INVOICE.replace(
+		'invoice: ./invoice.json',
+		'invoice: ./invoice.json\nrecipient: |\n  Andere GmbH\n  8000 Zürich',
+	)
 	expect(loadDocument(writeDoc(docDir(), 'r.md', md)).invoice?.debtor).toBeUndefined()
 })
 
-test('an invoice without subject takes Banana\'s document title', () => {
+test("an invoice without subject takes Banana's document title", () => {
 	const path = writeDoc(docDir(), 'r.md', INVOICE.replace('subject: Unterhalt muster-ag.ch\n', ''))
 	expect(loadDocument(path).subject).toBe('Unterhalt muster-ag.ch')
 })

@@ -12,12 +12,19 @@ const TOLERANCE = 0.2
 export function verifyLayout(pages: TextItem[][], doc: LetterDocument): void {
 	const page = pages[0] ?? []
 	for (const line of doc.recipient) {
-		const fits = page.some(item => item.str.trim() === line
-			&& item.xMm >= WINDOW.left - TOLERANCE && item.rightMm <= WINDOW.right + TOLERANCE
-			&& item.topMm >= WINDOW.top - TOLERANCE && item.bottomMm <= WINDOW.bottom + TOLERANCE)
+		const fits = page.some(
+			item =>
+				item.str.trim() === line &&
+				item.xMm >= WINDOW.left - TOLERANCE &&
+				item.rightMm <= WINDOW.right + TOLERANCE &&
+				item.topMm >= WINDOW.top - TOLERANCE &&
+				item.bottomMm <= WINDOW.bottom + TOLERANCE,
+		)
 		if (!fits) throw new LetterError(`${doc.fileName}: address does not fit the envelope window ("${line}")`)
 	}
-	const subject = page.find(item => doc.subject.startsWith(item.str.trim()) && item.str.trim() !== '' && item.topMm > WINDOW.bottom)
+	const subject = page.find(
+		item => doc.subject.startsWith(item.str.trim()) && item.str.trim() !== '' && item.topMm > WINDOW.bottom,
+	)
 	if (!subject || subject.topMm < SUBJECT_MIN_TOP - TOLERANCE) {
 		throw new LetterError(`${doc.fileName}: the subject would show through the envelope window`)
 	}

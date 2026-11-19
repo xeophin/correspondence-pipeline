@@ -26,7 +26,11 @@ function exec() {
 		var invoice = JSON.parse(row.value('ObjectJSonData')).InvoiceDocument
 		var customer = invoice.customer_info || {}
 		invoices.push(invoice)
-		labels.push(invoice.document_info.number + ' – ' + (customer.business_name || [customer.first_name, customer.last_name].join(' ')))
+		labels.push(
+			invoice.document_info.number +
+				' – ' +
+				(customer.business_name || [customer.first_name, customer.last_name].join(' ')),
+		)
 	}
 	if (!invoices.length) {
 		Banana.Ui.showInformation('Export invoice', 'No invoices found.')
@@ -36,7 +40,11 @@ function exec() {
 	if (choice === undefined) return '@Cancel'
 	var selected = invoices[labels.indexOf(choice)]
 
-	var fileName = Banana.IO.getSaveFileName('Save invoice JSON', selected.document_info.number + '.json', 'JSON (*.json)')
+	var fileName = Banana.IO.getSaveFileName(
+		'Save invoice JSON',
+		selected.document_info.number + '.json',
+		'JSON (*.json)',
+	)
 	if (!fileName.length) return '@Cancel'
 	var file = Banana.IO.getLocalFile(fileName)
 	file.write(JSON.stringify(selected, null, 2))

@@ -5,7 +5,9 @@ import { renderPdf } from './helpers/render.ts'
 import { formatAmount, formatDate, formatPeriod } from '../src/lib/i18n.ts'
 
 let pages: TextItem[][]
-beforeAll(async () => { pages = (await renderPdf('examples/invoice/invoice-with-hours.md')).pages })
+beforeAll(async () => {
+	pages = (await renderPdf('examples/invoice/invoice-with-hours.md')).pages
+})
 
 test('the attachment follows the QR-bill page', () => {
 	expect(pages).toHaveLength(3)
@@ -32,7 +34,13 @@ test('the invoice takes project and service period from the timesheet', () => {
 
 test('it lists every entry and the total', () => {
 	const text = pageText(pages[2])
-	for (const notes of ['Plugin-Updates und Backup geprüft', 'Kontaktformular: Spam-Schutz eingebaut', 'Neue Teamseite', 'Bildoptimierung Startseite', 'Telefonat und Abstimmung']) {
+	for (const notes of [
+		'Plugin-Updates und Backup geprüft',
+		'Kontaktformular: Spam-Schutz eingebaut',
+		'Neue Teamseite',
+		'Bildoptimierung Startseite',
+		'Telefonat und Abstimmung',
+	]) {
 		expect(text).toContain(notes)
 	}
 	expect(text).toContain(formatDate('de', '2026-11-04'))

@@ -18,7 +18,10 @@ export function letterLoader(): Loader {
 	return {
 		name: 'letter-loader',
 		load: async ({ store, config, renderMarkdown, watcher }) => {
-			const path = resolve(fileURLToPath(config.root), process.env.LETTER_FILE ?? 'examples/invoice/invoice-with-hours.md')
+			const path = resolve(
+				fileURLToPath(config.root),
+				process.env.LETTER_FILE ?? 'examples/invoice/invoice-with-hours.md',
+			)
 			const doc = loadDocument(path)
 			const [before, after] = await Promise.all([renderMarkdown(doc.bodyBefore), renderMarkdown(doc.bodyAfter)])
 			const data: LoadedLetter = { doc, htmlBefore: before.html, htmlAfter: after.html, signature: loadSignature(doc) }

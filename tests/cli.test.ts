@@ -31,7 +31,8 @@ test('writes the PDF next to a file with quotes and umlauts in its name', async 
 })
 
 test('six recipient lines do not fit the envelope window', () => {
-	const md = LETTER_FRONTMATTER.replace('3000 Bern', '3000 Bern\n  Schweiz\n  Postfach 1\n  z. H. Buchhaltung') + 'Text\n'
+	const md =
+		LETTER_FRONTMATTER.replace('3000 Bern', '3000 Bern\n  Schweiz\n  Postfach 1\n  z. H. Buchhaltung') + 'Text\n'
 	const { md: path, pdf } = tempDoc('zu-lang.md', md)
 	const result = run(path)
 	expect(result.status).toBe(1)
@@ -40,7 +41,9 @@ test('six recipient lines do not fit the envelope window', () => {
 })
 
 test('a 70-character recipient line does not fit the envelope window', () => {
-	const md = LETTER_FRONTMATTER.replace('Muster AG', 'Muster Aktiengesellschaft für ausserordentlich lange Firmennamen Zürich') + 'Text\n'
+	const md =
+		LETTER_FRONTMATTER.replace('Muster AG', 'Muster Aktiengesellschaft für ausserordentlich lange Firmennamen Zürich') +
+		'Text\n'
 	const { md: path, pdf } = tempDoc('zu-breit.md', md)
 	const result = run(path)
 	expect(result.status).toBe(1)
@@ -93,9 +96,22 @@ test('a five-line address fits the envelope window', () => {
 
 test('a relative LETTER_CONFIG resolves against the working directory', () => {
 	const cwd = mkdtempSync(join(tmpdir(), 'letter-cwd-'))
-	writeFileSync(join(cwd, 'config.json'), JSON.stringify({ ...JSON.parse(readFileSync('examples/config.json', 'utf8')), signature: resolve('tests/fixtures/signature.png') }))
-	const { md, pdf } = tempDoc('brief.md', readFileSync('examples/letter.md', 'utf8').replace('type: letter', 'type: letter\nsignature: true'))
-	const result = spawnSync(process.execPath, [CLI, md], { cwd, encoding: 'utf8', env: { ...process.env, LETTER_CONFIG: './config.json' } })
+	writeFileSync(
+		join(cwd, 'config.json'),
+		JSON.stringify({
+			...JSON.parse(readFileSync('examples/config.json', 'utf8')),
+			signature: resolve('tests/fixtures/signature.png'),
+		}),
+	)
+	const { md, pdf } = tempDoc(
+		'brief.md',
+		readFileSync('examples/letter.md', 'utf8').replace('type: letter', 'type: letter\nsignature: true'),
+	)
+	const result = spawnSync(process.execPath, [CLI, md], {
+		cwd,
+		encoding: 'utf8',
+		env: { ...process.env, LETTER_CONFIG: './config.json' },
+	})
 	expect(result.stderr).toBe('')
 	expect(existsSync(pdf)).toBe(true)
 })

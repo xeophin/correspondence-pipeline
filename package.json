@@ -1,31 +1,36 @@
 {
-  "name": "correspondence-layouts",
-  "type": "module",
-  "version": "1.0.0",
-  "engines": {
-    "node": ">=22.23.4"
-  },
-  "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
-    "astro": "astro",
-    "test": "vitest run"
-  },
-  "dependencies": {
-    "astro": "^7.4.12",
-    "playwright": "^1.65.1",
-    "swissqrbill": "^4.4.4",
-    "unpdf": "^2.2.1",
-    "yaml": "^2.9.1",
-    "zod": "^4.6.7"
-  },
-  "devDependencies": {
-    "@vitest/coverage-v8": "^5.1.0",
-    "vitest": "^5.1.0"
-  },
-  "bin": {
-    "letter": "src/cli/letter.ts"
-  },
-  "packageManager": "pnpm@12.22.0+sha512.894940a3d9a57dfa6fd373990fb4e41e09c2f2d76d982ed1d75275d39267f988fb4e2d40900cbe9921c68d97c67aa1a1096d276633db248f7b34927ac9ddb7a4"
+	"name": "correspondence-layouts",
+	"version": "1.0.0",
+	"bin": {
+		"letter": "src/cli/letter.ts"
+	},
+	"type": "module",
+	"scripts": {
+		"dev": "astro dev",
+		"build": "astro build",
+		"preview": "astro preview",
+		"astro": "astro",
+		"test": "vitest run",
+		"lint": "oxlint",
+		"format": "oxfmt",
+		"format:check": "oxfmt --check"
+	},
+	"dependencies": {
+		"astro": "^7.4.12",
+		"playwright": "^1.65.1",
+		"swissqrbill": "^4.4.4",
+		"unpdf": "^2.2.1",
+		"yaml": "^2.9.1",
+		"zod": "^4.6.7"
+	},
+	"devDependencies": {
+		"@vitest/coverage-v8": "^5.1.0",
+		"oxfmt": "^0.79.0",
+		"oxlint": "^1.94.0",
+		"vitest": "^5.1.0"
+	},
+	"engines": {
+		"node": ">=22.23.4"
+	},
+	"packageManager": "pnpm@12.22.0+sha512.894940a3d9a57dfa6fd373990fb4e41e09c2f2d76d982ed1d75275d39267f988fb4e2d40900cbe9921c68d97c67aa1a1096d276633db248f7b34927ac9ddb7a4"
 }

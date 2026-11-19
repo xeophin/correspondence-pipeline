@@ -1,0 +1,12 @@
+{
+	"$schema": "./node_modules/oxlint/configuration_schema.json",
+	"categories": { "correctness": "error" },
+	"ignorePatterns": ["dist/**", ".astro/**", "examples/**"],
+	"overrides": [
+		{
+			// Banana calls `exec` itself; it is never referenced in the file.
+			"files": ["banana/*.js"],
+			"rules": { "no-unused-vars": "off" }
+		}
+	]
+}

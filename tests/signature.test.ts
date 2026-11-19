@@ -6,10 +6,16 @@ import { loadSignature } from '../src/lib/signature.ts'
 import { renderPdf } from './helpers/render.ts'
 import { docDir, writeDoc } from './helpers/docs.ts'
 
-afterEach(() => { delete process.env.LETTER_CONFIG })
+afterEach(() => {
+	delete process.env.LETTER_CONFIG
+})
 
-const letter = (signature: boolean) => writeDoc(docDir(), 'brief.md',
-	readFileSync('examples/letter.md', 'utf8').replace('type: letter', `type: letter\nsignature: ${signature}`))
+const letter = (signature: boolean) =>
+	writeDoc(
+		docDir(),
+		'brief.md',
+		readFileSync('examples/letter.md', 'utf8').replace('type: letter', `type: letter\nsignature: ${signature}`),
+	)
 
 test('signature: true embeds the configured image above the name', async () => {
 	process.env.LETTER_CONFIG = 'tests/fixtures/config-signature.json'

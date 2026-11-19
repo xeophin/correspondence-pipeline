@@ -27,13 +27,14 @@ Package manager is pnpm (Node >= 22.23.4). Astro 7.
 - `pnpm test` — Vitest. Most tests build a real PDF and check text positions in mm (`src/cli/pdf-text.ts`); they need Unica 77 LL installed.
 - `pnpm exec playwright install chromium` — once, after install
 - `node src/cli/letter.ts <file.md>` — the CLI. Global install: `pnpm setup` (adds pnpm's bin dir to PATH), then `pnpm add -g link:$PWD`, then `letter <file.md>`
+- `letter new [letter|invoice] [name]` — writes `<today>-<name>.md` into the current directory with all frontmatter keys (optional ones commented out); never overwrites
 - Dev preview of one document: `LETTER_FILE=examples/bewerbung.md astro dev --background` (default: `examples/letter.md`)
 
 pnpm and fnm's Node are not readable inside Claude Code's sandbox; pnpm commands run outside it.
 
 ## Structure
 
-- `src/lib/` — plain TS run by Node directly (erasable syntax only, `.ts` import extensions): document model and validation, Banana mapping, i18n, page CSS, QR-bill, signature, user config (`~/.config/letter/config.json` or `$LETTER_CONFIG`: sender, header brands, signature)
+- `src/lib/` — plain TS run by Node directly (erasable syntax only, `.ts` import extensions): document model and validation, Banana mapping, i18n, page CSS, QR-bill, signature, `letter new` scaffold templates, user config (`~/.config/letter/config.json` or `$LETTER_CONFIG`: sender, header brands, signature)
 - `src/cli/` — the `letter` command: build (Astro into `.astro/builds/`, cwd = repo, because Astro's prerender step must sit inside cwd), serve, print, verify layout against the envelope window
 - `src/layouts/Document.astro`, `src/components/` — the templates; `src/styles/tables.css` styles every table (items, timesheet, Markdown body)
 - `.github/dependabot.yml` — weekly npm updates, grouped into one PR for production and one for development dependencies
@@ -66,3 +67,4 @@ Claude's own session memory is not part of the repo, so durable project knowledg
 - 2026-11-18: Pro-forma invoices (`total_to_pay` 0) get no QR-bill.
 - 2026-11-18: Invoices list invoice number, project, customer number, due date and service period left of the address (`PropertyList`); rows without a value are left out. Banana's invoice JSON has no project or period, so they come from the frontmatter or, failing that, the timesheet. Due date is `payment_info.due_date`. The timesheet title is just "Stundenrapport"; project id, name and period sit in a `PropertyList` below it.
 - 2026-11-19: Sender (name, address, email, phone) and header brands moved out of the code into the user config and are required; the repo and its examples, fixtures and docs use a fictional sender. Tests point `LETTER_CONFIG` at `examples/config.json` (`tests/helpers/setup.ts`). Banana extension IDs (`net.xeophin.letter.*`) and `@publisher` are kept on purpose, not anonymised.
+- 2026-11-19: `letter new` scaffolds from template strings in `src/lib/scaffold.ts`, not from the zod schema (the schema has no comments or Banana fallbacks); `tests/scaffold.test.ts` keeps them in step. `subject` is left empty so an unedited scaffold fails validation. No `--personal` flag; `sender: personal` is a commented hint.

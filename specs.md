@@ -42,7 +42,7 @@ Banana Accounting Plus ──(own extension: export JSON)──┐
 ```
 
 1. For invoices: create the invoice in Banana as usual. Run the toolchain's Banana extension to export the invoice JSON (and, if needed, the timesheet JSON for a project and period) into the client folder.
-2. Write the letter as Markdown with YAML frontmatter.
+2. Write the letter as Markdown with YAML frontmatter. `letter new [letter|invoice] [name]` creates a dated starting file in the current directory with all keys listed.
 3. Run `letter path/to/file.md`. The PDF is written next to it with the same base name. An existing PDF is overwritten (it can always be regenerated).
 
 ## Architecture (decided 2026-11-17)

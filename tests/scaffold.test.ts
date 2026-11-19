@@ -7,7 +7,20 @@ import { LetterError } from '../src/lib/errors.ts'
 import { scaffold } from '../src/lib/scaffold.ts'
 import { docDir, writeDoc } from './helpers/docs.ts'
 
-const KEYS = ['type', 'sender', 'lang', 'date', 'subject', 'recipient', 'invoice', 'timesheet', 'project', 'period', 'signature', 'title']
+const KEYS = [
+	'type',
+	'sender',
+	'lang',
+	'date',
+	'subject',
+	'recipient',
+	'invoice',
+	'timesheet',
+	'project',
+	'period',
+	'signature',
+	'title',
+]
 
 const INVOICE_ONLY = ['invoice', 'timesheet', 'project', 'period']
 

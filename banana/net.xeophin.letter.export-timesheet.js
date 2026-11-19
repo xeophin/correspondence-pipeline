@@ -1,4 +1,4 @@
-// @id = ch.xeophin.letter.export-timesheet
+// @id = net.xeophin.letter.export-timesheet
 // @api = 1.0
 // @pubdate = 2026-11-17
 // @publisher = Kaspar Manz

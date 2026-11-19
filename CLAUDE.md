@@ -32,11 +32,11 @@ pnpm and fnm's Node are not readable inside Claude Code's sandbox; pnpm commands
 
 ## Structure
 
-- `src/lib/` — plain TS run by Node directly (erasable syntax only, `.ts` import extensions): document model and validation, Banana mapping, i18n, page CSS, QR-bill, signature, user config (`~/.config/letter/config.json` or `$LETTER_CONFIG`)
+- `src/lib/` — plain TS run by Node directly (erasable syntax only, `.ts` import extensions): document model and validation, Banana mapping, i18n, page CSS, QR-bill, signature, user config (`~/.config/letter/config.json` or `$LETTER_CONFIG`: sender, header brands, signature)
 - `src/cli/` — the `letter` command: build (Astro into `.astro/builds/`, cwd = repo, because Astro's prerender step must sit inside cwd), serve, print, verify layout against the envelope window
 - `src/layouts/Document.astro`, `src/components/` — the templates; `src/styles/tables.css` styles every table (items, timesheet, Markdown body)
 - `banana/` — Banana Accounting extensions that export invoice and timesheet JSON
-- `examples/` — fictional documents for tests and preview
+- `examples/` — fictional documents for tests and preview. The repo must hold no real personal or client data: the sender lives in the user config, everything else is fictional (Hanna Beispiel, Muster AG)
 
 User-facing errors are `LetterError`; anything that must fail with a clear message has to be checked before the Astro build (errors thrown inside Astro lose their type).
 
@@ -63,3 +63,4 @@ Claude's own session memory is not part of the repo, so durable project knowledg
 - 2026-11-18: Running header is brand / subject; `/` is the separator everywhere (header, footer, timesheet title). Invoices may omit `subject`; it falls back to Banana's `document_info.title`.
 - 2026-11-18: Pro-forma invoices (`total_to_pay` 0) get no QR-bill.
 - 2026-11-18: Invoices list invoice number, project, customer number, due date and service period left of the address (`PropertyList`); rows without a value are left out. Banana's invoice JSON has no project or period, so they come from the frontmatter or, failing that, the timesheet. Due date is `payment_info.due_date`. The timesheet title is just "Stundenrapport"; project id, name and period sit in a `PropertyList` below it.
+- 2026-11-19: Sender (name, address, email, phone) and header brands moved out of the code into the user config and are required; the repo and its examples, fixtures and docs use a fictional sender. Tests point `LETTER_CONFIG` at `examples/config.json` (`tests/helpers/setup.ts`). Banana extension IDs (`net.xeophin.letter.*`) and `@publisher` are kept on purpose, not anonymised.

@@ -1,16 +1,17 @@
 ---
-import { SENDER } from '../lib/sender.ts'
+import { loadUserConfig } from '../lib/config.ts'
 
 interface Props {
 	recipient: string[]
 }
 
 const { recipient } = Astro.props
+const { sender } = loadUserConfig()
 ---
 
 <section class="address">
 	<address class="return-address trim-line">
-		{SENDER.name}, {SENDER.street}, {SENDER.zip} {SENDER.city}
+		{sender.name}, {sender.street}, {sender.zip} {sender.city}
 	</address>
 	<address class="recipient trim-line">
 		{recipient.map(line => <span>{line}</span>)}

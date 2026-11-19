@@ -153,7 +153,7 @@ Proves the spec's "verify early" items for Chromium: margin boxes with `counter(
 ### Task 4: Banana invoice mapping, sender data, user config
 
 **Files:**
-- Create: `src/lib/banana.ts`, `src/lib/sender.ts`, `src/lib/config.ts`
+- Create: `src/lib/banana.ts`, `src/lib/sender.ts` (since moved into the user config), `src/lib/config.ts`
 - Create: `examples/invoice/invoice.json`. Use the example JSON from Banana's "Invoice Json Object" page (https://www.banana.ch/doc/en/node/8833), with fictional names, number `2026-042` and currency CHF.
 - Create: `examples/config.json` (IBAN `CH93 0076 2011 6238 5295 7`, a public example)
 - Test: `tests/banana.test.ts`, `tests/config.test.ts`
@@ -322,12 +322,12 @@ QR-bill on its own page: confirmed by the user on 2026-11-17 (see specs.md, Invo
 ### Task 12: Banana export extension
 
 **Files:**
-- Create: `banana/package.json` (`{"type":"commonjs"}`), `banana/timesheet-core.js`, `banana/ch.xeophin.letter.export.js`
+- Create: `banana/package.json` (`{"type":"commonjs"}`), `banana/timesheet-core.js`, `banana/net.xeophin.letter.export.js`
 - Test: `tests/banana-extension.test.ts`
 
 **Interfaces:**
 - Produces: `buildTimesheet(rows, opts): Timesheet-shaped object` in `timesheet-core.js`. `rows: { date, projectId, projectDescription, resourceId, notes, hours, rowType }[]`, and `opts: { projectId, start, end }` are inclusive ISO dates. It filters by project and period, sorts by date and sums the total. It is exported via `if (typeof module !== 'undefined') module.exports = { buildTimesheet }` so that Banana's `// @includejs = timesheet-core.js` still works.
-- The extension (`@task = app.command`, `@api = 1.0`, `@id = ch.xeophin.letter.export`) offers two commands: export the selected invoice's `ObjectJSonData` from `Banana.document.invoicesCustomers()` unchanged, and export a timesheet (dialogs for project and period; it reads `Banana.document.table('Journal')` columns `Date`, `ProjectsId`, `ProjectsDescription`, `ResourcesId`, `Notes`, `TimeDayTotal`, `RowType`). Both save via a file dialog. Check the API names against https://www.banana.ch/doc/en/node/4714 and the invoice export example https://www.banana.ch/doc/en/node/9749.
+- The extension (`@task = app.command`, `@api = 1.0`, `@id = net.xeophin.letter.export`) offers two commands: export the selected invoice's `ObjectJSonData` from `Banana.document.invoicesCustomers()` unchanged, and export a timesheet (dialogs for project and period; it reads `Banana.document.table('Journal')` columns `Date`, `ProjectsId`, `ProjectsDescription`, `ResourcesId`, `Notes`, `TimeDayTotal`, `RowType`). Both save via a file dialog. Check the API names against https://www.banana.ch/doc/en/node/4714 and the invoice export example https://www.banana.ch/doc/en/node/9749.
 
 - [ ] **Step 1: Write failing tests:** `buildTimesheet` filters other projects and dates outside the period, and `parseTimesheet(buildTimesheet(...))` (Task 3) succeeds, so both sides agree on the format.
 - [ ] **Step 2:** Run `pnpm test tests/banana-extension.test.ts`. Expected: FAIL.

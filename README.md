@@ -45,11 +45,23 @@ In an invoice, a line `::items` places the items table; without it the table fol
 `~/.config/letter/config.json` (or `$LETTER_CONFIG`):
 
 ```json
-{ "signature": "signature.png" }
+{
+  "sender": {
+    "name": "Hanna Beispiel",
+    "street": "Beispielweg 1",
+    "zip": "8000",
+    "city": "Zürich",
+    "country": "CH",
+    "email": "hanna@example.org",
+    "phone": "+41 44 000 00 00"
+  },
+  "brands": { "business": "example.org/studio", "personal": "hanna/beispiel" },
+  "signature": "signature.png"
+}
 ```
 
-The path is relative to the config file.
+`sender` (return address, footer, QR-bill creditor) and `brands` (header, one per `sender:` value) are required; `signature` is optional and its path is relative to the config file. `examples/config.json` holds fictional values and is what the tests use.
 
 ### Banana
 
-Install `banana/ch.xeophin.letter.export-invoice.js` (in the accounting file) and `banana/ch.xeophin.letter.export-timesheet.js` (in the timesheet file) via Extensions → Manage Extensions → Add from file. Each asks what to export and where to save the JSON.
+Install `banana/net.xeophin.letter.export-invoice.js` (in the accounting file) and `banana/net.xeophin.letter.export-timesheet.js` (in the timesheet file) via Extensions → Manage Extensions → Add from file. Each asks what to export and where to save the JSON.

@@ -13,7 +13,7 @@ import type { LoadedLetter } from '../lib/letter-loader.ts'
 import { formatDate, formatPeriod, t } from '../lib/i18n.ts'
 import { PAGE_MARGIN } from '../lib/page-css.ts'
 import { hasQrBill } from '../lib/qr.ts'
-import { SENDER } from '../lib/sender.ts'
+import { loadUserConfig } from '../lib/config.ts'
 import '../styles/tables.css'
 
 type Props = LoadedLetter
@@ -30,13 +30,14 @@ if (signature) {
 	if (htmlAfter.trim()) htmlAfter = insert(htmlAfter)
 	else htmlBefore = insert(htmlBefore)
 }
-const brand = doc.sender === 'business' ? 'example.org/studio' : 'hanna/beispiel'
+const { sender, brands } = loadUserConfig()
+const brand = brands[doc.sender] as `${string}/${string}`
 const typeLabel = doc.type === 'invoice' ? t(doc.lang, 'type.invoice') : undefined
 const typeLine = doc.sender === 'business' ? typeLabel : undefined
 const runningHeader = `${brand} / ${doc.subject}`
 const footerLines = [
-	`${SENDER.name} / ${SENDER.street} / ${SENDER.zip} ${SENDER.city}`,
-	`${SENDER.email} / ${SENDER.phone}`,
+	`${sender.name} / ${sender.street} / ${sender.zip} ${sender.city}`,
+	`${sender.email} / ${sender.phone}`,
 ]
 
 // Invoice details, left of the address; rows without a value are left out.

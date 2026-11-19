@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { writeFile } from 'node:fs/promises'
 import { join, parse, resolve } from 'node:path'
-import { configPath } from '../lib/config.ts'
+import { configPath, loadUserConfig } from '../lib/config.ts'
 import { loadDocument } from '../lib/document.ts'
 import { LetterError } from '../lib/errors.ts'
 import { hasQrBill, qrBillSvg } from '../lib/qr.ts'
@@ -16,6 +16,7 @@ async function main(args: string[]): Promise<void> {
 	if (args.length !== 1) throw new LetterError('usage: letter <file.md>')
 	// The build runs with the repo as cwd: pin a relative config path to the caller's cwd first.
 	process.env.LETTER_CONFIG = resolve(configPath())
+	loadUserConfig() // sender and brands are required; fail here with a LetterError
 	const doc = loadDocument(args[0])
 	// Validate here: errors inside the Astro build lose their LetterError type.
 	if (doc.invoice && hasQrBill(doc.invoice)) qrBillSvg(doc.invoice, doc.lang)

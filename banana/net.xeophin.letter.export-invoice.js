@@ -1,4 +1,4 @@
-// @id = ch.xeophin.letter.export-invoice
+// @id = net.xeophin.letter.export-invoice
 // @api = 1.0
 // @pubdate = 2026-11-17
 // @publisher = Kaspar Manz

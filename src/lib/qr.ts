@@ -2,7 +2,7 @@ import { SwissQRBill } from 'swissqrbill/svg'
 import type { InvoiceView } from './banana.ts'
 import { LetterError } from './errors.ts'
 import { t, type Lang } from './i18n.ts'
-import { SENDER } from './sender.ts'
+import { loadUserConfig } from './config.ts'
 
 /** Structured QR-bill addresses carry the house number separately. */
 export function splitStreet(street: string): { address: string; buildingNumber?: string } {
@@ -51,17 +51,18 @@ export function qrBillSvg(invoice: InvoiceView, lang: Lang): string {
 	if (!invoice.creditorIban) {
 		throw new LetterError('QR-bill: the Banana invoice JSON has no supplier_info.iban_number (set the IBAN in Banana\'s file properties)')
 	}
+	const { sender } = loadUserConfig()
 	try {
 		return new SwissQRBill({
 			amount: invoice.total,
 			currency: invoice.currency as 'CHF' | 'EUR',
 			creditor: {
 				account: invoice.creditorIban,
-				name: SENDER.name,
-				...splitStreet(SENDER.street),
-				zip: SENDER.zip,
-				city: SENDER.city,
-				country: SENDER.country,
+				name: sender.name,
+				...splitStreet(sender.street),
+				zip: sender.zip,
+				city: sender.city,
+				country: sender.country,
 			},
 			...invoice.debtor && {
 				debtor: {

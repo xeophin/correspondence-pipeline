@@ -4,7 +4,7 @@ interface Props {
 	typeLine?: string
 }
 
-const { brand = 'example.org/studio', typeLine } = Astro.props
+const { brand, typeLine } = Astro.props
 const [first, second] = brand.split('/')
 ---
 

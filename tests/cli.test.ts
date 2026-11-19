@@ -1,5 +1,14 @@
 import { spawnSync } from 'node:child_process'
-import { copyFileSync, existsSync, mkdtempSync, readFileSync, statSync, utimesSync, writeFileSync } from 'node:fs'
+import {
+	copyFileSync,
+	existsSync,
+	mkdtempSync,
+	readdirSync,
+	readFileSync,
+	statSync,
+	utimesSync,
+	writeFileSync,
+} from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
 import { expect, test } from 'vitest'
@@ -127,4 +136,56 @@ test('a pro-forma invoice (Banana leaves the totals empty) prints without a QR-b
 	expect(pageText(pages[0])).toContain('Schlussrechnung Unterhalt muster.ch')
 	expect(pageText(pages[0])).toContain('Musterweg 27B')
 	expect(pageText(pages[0])).not.toContain('Zahlteil')
+})
+
+function runNew(cwd: string, ...args: string[]) {
+	const env = { ...process.env }
+	delete env.LETTER_CONFIG
+	return spawnSync(process.execPath, [CLI, 'new', ...args], { cwd, encoding: 'utf8', env })
+}
+
+const today = () => new Date().toLocaleDateString('sv')
+
+test('new writes a dated letter scaffold without needing a user config', () => {
+	const cwd = mkdtempSync(join(tmpdir(), 'letter-new-'))
+	const result = runNew(cwd)
+	expect(result.stderr).toBe('')
+	expect(result.status).toBe(0)
+	expect(result.stdout).toContain(`${today()}-letter.md`)
+	expect(readFileSync(join(cwd, `${today()}-letter.md`), 'utf8')).toContain('type: letter')
+})
+
+test('new invoice with a name writes an invoice scaffold', () => {
+	const cwd = mkdtempSync(join(tmpdir(), 'letter-new-'))
+	expect(runNew(cwd, 'invoice', 'kibo').status).toBe(0)
+	expect(readFileSync(join(cwd, `${today()}-kibo.md`), 'utf8')).toContain('type: invoice')
+})
+
+test('new treats a lone non-type argument as the name of a letter', () => {
+	const cwd = mkdtempSync(join(tmpdir(), 'letter-new-'))
+	expect(runNew(cwd, 'bewerbung').status).toBe(0)
+	expect(readFileSync(join(cwd, `${today()}-bewerbung.md`), 'utf8')).toContain('type: letter')
+})
+
+test('new never overwrites an existing file', () => {
+	const cwd = mkdtempSync(join(tmpdir(), 'letter-new-'))
+	const file = join(cwd, `${today()}-letter.md`)
+	writeFileSync(file, 'mine')
+	const result = runNew(cwd)
+	expect(result.status).toBe(1)
+	expect(result.stderr).toMatch(/already exists/)
+	expect(readFileSync(file, 'utf8')).toBe('mine')
+})
+
+test('new with too many arguments or an unknown type prints usage and writes nothing', () => {
+	const cwd = mkdtempSync(join(tmpdir(), 'letter-new-'))
+	for (const args of [
+		['offer', 'x', 'y'],
+		['invoice', 'a', 'b'],
+	]) {
+		const result = runNew(cwd, ...args)
+		expect(result.status).toBe(1)
+		expect(result.stderr).toMatch(/usage/)
+	}
+	expect(readdirSync(cwd)).toEqual([])
 })
